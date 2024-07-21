@@ -12,6 +12,8 @@ from interactions import(
     component_callback,
     ComponentContext,
     ActionRow,
+    Embed,
+    Embed
     )
 # from interactions.api.events import Component
 from interactions.ext.paginators import Paginator
@@ -35,8 +37,7 @@ async def on_ready():
 async def my_command_function(ctx: SlashContext):
     """Basic test 1"""
 # Here would need to check are there any other instances of the game
-    await ctx.send(f"Starting DEFCORD")
-    component = ActionRow(
+    components = ActionRow(
         Button(
         style=ButtonStyle.GREEN,
         label="Join",
@@ -48,7 +49,11 @@ async def my_command_function(ctx: SlashContext):
         custom_id="leave_game",
         ),
     )
-    await ctx.send(f"Player <@{ctx.user.id}> has started ``DEFCORD``, Click on ``Join`` to join this game", components=component)
+    embed = Embed(title=f"Starting DEFCORD",
+                  description=f"The tactical game of DEFCORD has been initiated by <@{ctx.user.id}>",
+                  color=(255,0,0),
+                  )
+    await ctx.send(embed=embed, components=components)
 
 @component_callback("join_game")
 async def join_callback(ctx: ComponentContext):
