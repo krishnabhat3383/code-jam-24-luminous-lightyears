@@ -11,12 +11,13 @@ from interactions import(
     ButtonStyle,
     component_callback,
     ComponentContext,
+    ActionRow,
     )
 from interactions.api.events import Component
 
 from dotenv import load_dotenv
 import os
-# import asyncio
+import asyncio
 
 _ = load_dotenv()
 bot = Client(intents=Intents.DEFAULT)
@@ -35,15 +36,23 @@ async def my_command_function(ctx: SlashContext):
     """Basic test 1"""
 # Here would need to check are there any other instances of the game
     await ctx.send(f"Starting DEFCORD")
-    components = Button(
+    components = ActionRow(
+        Button(
         style=ButtonStyle.GREEN,
         label="Join",
         custom_id="join_game",
+    ),
+        Button( 
+        style=ButtonStyle.RED,
+        label="Leave",
+        custom_id="leave_game",
+        )
     )
+
     await ctx.send(f"Player {ctx.user.display_name} has started DEFCORD, Click on Join to join this game", components=components)
 
 @component_callback("join_game")
-async def my_callback(ctx: ComponentContext):
+async def join_callback(ctx: ComponentContext):
     user = ctx.user
     if user.id not in users_ids:
         await ctx.send(f"Player {user.display_name} has joined")
@@ -52,6 +61,15 @@ async def my_callback(ctx: ComponentContext):
         await ctx.send(f"You are already part of the game",ephemeral=True)
     # Cue up the player from here
 
+@component_callback("leave_game")
+async def leave_callback(ctx: ComponentContext):
+    user = ctx.user
+    if user.id in users_ids:
+        await ctx.send(f"Player {user.display_name} has left")
+        users_ids.remove(user.id)
+    else:
+        await ctx.send(f"You are not part of the game",ephemeral=True)
+    
 @message_context_menu(name="repeat")
 async def repeat(ctx: ContextMenuContext):
     message: Message = ctx.target
