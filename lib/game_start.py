@@ -13,11 +13,11 @@ from interactions import(
     ComponentContext,
     ActionRow,
     )
-from interactions.api.events import Component
-
-from dotenv import load_dotenv
+# from interactions.api.events import Component
+from interactions.ext.paginators import Paginator
+from dotenv import load_dotenv  
 import os
-import asyncio
+# import asyncio
 
 _ = load_dotenv()
 bot = Client(intents=Intents.DEFAULT)
@@ -36,7 +36,7 @@ async def my_command_function(ctx: SlashContext):
     """Basic test 1"""
 # Here would need to check are there any other instances of the game
     await ctx.send(f"Starting DEFCORD")
-    components = ActionRow(
+    component = ActionRow(
         Button(
         style=ButtonStyle.GREEN,
         label="Join",
@@ -46,16 +46,15 @@ async def my_command_function(ctx: SlashContext):
         style=ButtonStyle.RED,
         label="Leave",
         custom_id="leave_game",
-        )
+        ),
     )
-
-    await ctx.send(f"Player {ctx.user.display_name} has started DEFCORD, Click on Join to join this game", components=components)
+    await ctx.send(f"Player <@{ctx.user.id}> has started ``DEFCORD``, Click on ``Join`` to join this game", components=component)
 
 @component_callback("join_game")
 async def join_callback(ctx: ComponentContext):
     user = ctx.user
     if user.id not in users_ids:
-        await ctx.send(f"Player {user.display_name} has joined")
+        await ctx.send(f"Player <@{user.id}> has joined")
         users_ids.append(user.id)
     else:
         await ctx.send(f"You are already part of the game",ephemeral=True)
@@ -65,7 +64,7 @@ async def join_callback(ctx: ComponentContext):
 async def leave_callback(ctx: ComponentContext):
     user = ctx.user
     if user.id in users_ids:
-        await ctx.send(f"Player {user.display_name} has left")
+        await ctx.send(f"Player <@{user.id}> has left")
         users_ids.remove(user.id)
     else:
         await ctx.send(f"You are not part of the game",ephemeral=True)
