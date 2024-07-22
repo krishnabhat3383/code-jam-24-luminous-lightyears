@@ -1,4 +1,5 @@
 from os import getenv
+from sys import exit
 
 from dotenv import load_dotenv
 from interactions import (
@@ -7,7 +8,6 @@ from interactions import (
     listen,
 )
 
-load_dotenv()
 bot = Client(intents=Intents.DEFAULT)
 
 
@@ -17,5 +17,12 @@ async def on_ready() -> None:
     print("Ready")
 
 
+load_dotenv()
+token = getenv("DEFCON_BOT_TOKEN")
+
+if token is None:
+    print("Token not found.\nPlease specify discord bot token via environment variable 'DEFCON_BOT_TOKEN'.")
+    exit()
+
 bot.load_extension("src.game_start")
-bot.start(getenv("BOT_TOKEN"))
+bot.start(token)
