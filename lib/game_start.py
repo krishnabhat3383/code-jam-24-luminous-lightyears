@@ -1,83 +1,76 @@
-from interactions import(
-    Client,
-    Intents,
-    listen,
-    slash_command,
-    SlashContext,
-    ContextMenuContext,
-    Message,
-    message_context_menu,
+import os
+
+from dotenv import load_dotenv
+from interactions import (
+    ActionRow,
     Button,
     ButtonStyle,
-    component_callback,
+    Client,
     ComponentContext,
-    ActionRow,
     Embed,
-    Embed
-    )
-# from interactions.api.events import Component
-from interactions.ext.paginators import Paginator
-from dotenv import load_dotenv  
-import os
-# import asyncio
+    Intents,
+    SlashContext,
+    component_callback,
+    listen,
+    slash_command,
+)
 
 _ = load_dotenv()
 bot = Client(intents=Intents.DEFAULT)
-# intents are what events we want to receive from discord, `DEFAULT` is usually fine
+users_ids: list[int] = []  # Global Var for the players in the game
 
-users_ids: list[int] = [] #Uhh fix this not being a global thing (idk how to)
 
-@listen()  # this decorator tells snek that it needs to listen for the corresponding event, and run this coroutine
-async def on_ready():
-    """Ready Indicator"""
-    # This event is called when the bot is ready to respond to commands
+@listen()
+async def on_ready() -> None:
+    """Print "Ready", when the bot is accepting commands."""
     print("Ready")
 
+
 @slash_command(name="start_defcord", description="Welcome to the simulation called DEFCORD")
-async def my_command_function(ctx: SlashContext):
-    """Basic test 1"""
-# Here would need to check are there any other instances of the game
+async def my_command_function(ctx: SlashContext) -> None:
+    """Start the game of DEFCORD."""
+    # Here would need to check are there any other instances of the game
     components = ActionRow(
         Button(
-        style=ButtonStyle.GREEN,
-        label="Join",
-        custom_id="join_game",
-    ),
-        Button( 
-        style=ButtonStyle.RED,
-        label="Leave",
-        custom_id="leave_game",
+            style=ButtonStyle.GREEN,
+            label="Join",
+            custom_id="join_game",
+        ),
+        Button(
+            style=ButtonStyle.RED,
+            label="Leave",
+            custom_id="leave_game",
         ),
     )
-    embed = Embed(title=f"Starting DEFCORD",
-                  description=f"The tactical game of DEFCORD has been initiated by <@{ctx.user.id}>",
-                  color=(255,0,0),
-                  )
+    embed = Embed(
+        title="Starting DEFCORD",
+        description=f"The tactical game of DEFCORD has been initiated by <@{ctx.user.id}>",
+        color=(255, 0, 0),
+    )
     await ctx.send(embed=embed, components=components)
 
+
 @component_callback("join_game")
-async def join_callback(ctx: ComponentContext):
+async def join_callback(ctx: ComponentContext) -> None:
+    """Control player joining the game."""
+    # Need to make this channel wise
     user = ctx.user
     if user.id not in users_ids:
         await ctx.send(f"Player <@{user.id}> has joined")
         users_ids.append(user.id)
     else:
-        await ctx.send(f"You are already part of the game",ephemeral=True)
-    # Cue up the player from here
+        await ctx.send("You are already part of the game", ephemeral=True)
+
 
 @component_callback("leave_game")
-async def leave_callback(ctx: ComponentContext):
+async def leave_callback(ctx: ComponentContext) -> None:
+    """Control players leaving the game."""
     user = ctx.user
     if user.id in users_ids:
         await ctx.send(f"Player <@{user.id}> has left")
         users_ids.remove(user.id)
     else:
-        await ctx.send(f"You are not part of the game",ephemeral=True)
-    
-@message_context_menu(name="repeat")
-async def repeat(ctx: ContextMenuContext):
-    message: Message = ctx.target
-    await ctx.send(message.content)
+        await ctx.send("You are not part of the game", ephemeral=True)
+
 
 bot.start(os.getenv("BOT_TOKEN"))
-bot.load_extension("interactions.ext.jurigged", poll = True)
