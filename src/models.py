@@ -63,7 +63,7 @@ class StageGroup:
     #     return stage
 
     stage: Stage | tuple[Stage] | Literal["all"] = field(
-        converter=lambda stage: TotalStages if stage == "all" else stage
+        converter=lambda stage: TotalStages if stage == "all" else stage,
     )
     templates: list[Template]
 
