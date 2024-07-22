@@ -14,12 +14,12 @@ bot = Client(intents=Intents.DEFAULT, logging_level=logging.WARNING)
 
 @listen()
 async def on_ready() -> None:
-    """Notify that the bot is started"""
+    """Notify that the bot is started."""
     log.info("Bot started.")
 
 
 def get_token() -> str:
-    """Try to read bot's token from environment or .env"""
+    """Try to read bot's token from environment or .env."""
 
     try:
         from dotenv import load_dotenv
