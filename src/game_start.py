@@ -5,8 +5,12 @@ from interactions import (
     ComponentContext,
     Embed,
     Extension,
+    Modal,
+    ModalContext,
+    ShortText,
     SlashContext,
     component_callback,
+    modal_callback,
     slash_command,
 )
 
@@ -45,8 +49,12 @@ class GameInitiation(Extension):
         # Need to make this channel wise
         user = ctx.user
         if user.id not in users_ids:
-            await ctx.send(f"Player <@{user.id}> has joined")
-            users_ids.append(user.id)
+            nation_modal = Modal(
+                ShortText(label="Type the name of your nation", custom_id="nation_name"),
+                title="Select Name of the nation",
+                custom_id="Nation_name",
+            )
+            await ctx.send_modal(modal=nation_modal)
         else:
             await ctx.send("You are already part of the game", ephemeral=True)
 
@@ -59,3 +67,12 @@ class GameInitiation(Extension):
             users_ids.remove(user.id)
         else:
             await ctx.send("You are not part of the game", ephemeral=True)
+
+    @modal_callback("Nation_name")
+    async def nation_name (self, ctx: ModalContext, nation_name: str) -> None:
+        """Send Nation name to player and program."""
+        await ctx.send(f"You have joined as the nation of {nation_name}", ephemeral=True)
+        users_ids.append(ctx.user.id)
+        if nation_name:
+            await ctx.send(f"Player <@{ctx.user.id}> has joined")
+        # here we can extract the nation name
