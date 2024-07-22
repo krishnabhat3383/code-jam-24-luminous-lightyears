@@ -2,17 +2,14 @@ from interactions import (
     ActionRow,
     Button,
     ButtonStyle,
-    Client,
     ComponentContext,
     Embed,
     Extension,
-    Intents,
     SlashContext,
     component_callback,
     slash_command,
 )
 
-bot = Client(intents=Intents.DEFAULT)
 users_ids: list[int] = []  # Global Var for the players in the game
 
 
