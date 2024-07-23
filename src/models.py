@@ -55,7 +55,7 @@ class Template:
 
     def to_embed(self, state: State) -> list[Embed, ActionRow]:
         """Return embed and action row for the UI purpose."""
-        buttons : list[Button] = []
+        buttons: list[Button] = []
         for id, choice in enumerate(self.choices):
             button = Button(
                 label=f"{next(iter(choice.keys()))}",
