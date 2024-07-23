@@ -94,7 +94,10 @@ class GameInitializon(Extension):
         await ctx.send_modal(modal=nation_name_modal)
 
         modal_ctx: ModalContext = await ctx.bot.wait_for_modal(nation_name_modal)
+        nation_name = modal_ctx.responses["nation_name"]
 
-        # await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
+        # interaction needs a response or we need to defer it.
+        await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
+        # TODO: think about defer and its args.
 
-        return modal_ctx.responses["nation_name"]
+        return nation_name
