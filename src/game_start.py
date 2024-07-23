@@ -1,23 +1,20 @@
 import random
 from string import ascii_uppercase, digits
+from typing import TYPE_CHECKING, Annotated
 
 from interactions import (
-    ActionRow,
-    Button,
-    ButtonStyle,
-    ComponentContext,
     Embed,
     Extension,
     OptionType,
     SlashContext,
-    component_callback,
     slash_command,
     slash_option,
 )
 
 from game import Game, GameID
 
-# Game = dict[Member, State]
+if TYPE_CHECKING:
+    from interactions import Client
 
 
 class GameFactory:
@@ -47,12 +44,16 @@ class GameFactory:
 class GameInitializon(Extension):
     """Control the extension entry point."""
 
-    def __init__(self, _) -> None:
+    def __init__(self, _: "Client") -> None:
         self.game_factory = GameFactory()
 
-    @slash_command(name="defcord_create_game", description="Welcome to the simulation called DEFCORD")
+    @slash_command(name="defcord_create", description="Create a new DEFCORD game.")
     async def create(self, ctx: SlashContext) -> None:
+        """Create a game of DEFCORD"""
         game = self.game_factory.create_game()  # Add the first player here
+        nation_name = await self.register_player()
+
+        await game.add_player(ctx.user, nation_name)
 
         embed = Embed(
             title="New game started!",
@@ -62,14 +63,18 @@ class GameInitializon(Extension):
 
         await ctx.send(embed=embed)
 
-    @slash_command(name="start_defcord", description="Welcome to the simulation called DEFCORD")
+    @slash_command(name="defcord_join", description="Join a game of DEFCORD.")
     @slash_option("invite", "The invite code for the game", required=True, opt_type=OptionType.STRING)
     async def join(self, ctx: SlashContext, invite: str) -> None:
-        """Start the game of DEFCORD."""
-
+        """Join a game of DEFCORD."""
         game = self.game_factory.query_game(invite)
 
         if game is None:
             raise NotImplementedError
 
-        await game.add_player(ctx.user, "")  # Ask nation name here
+        nation_name = await self.register_player()
+        await game.add_player(ctx.user, nation_name)  # Ask nation name here
+
+    async def register_player(self) -> Annotated[str, "Nation name"]:
+        """Ask the player for information."""
+        raise NotImplementedError
