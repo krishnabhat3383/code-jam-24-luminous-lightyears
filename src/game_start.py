@@ -1,4 +1,5 @@
 import random
+from asyncio import create_task
 from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING, Annotated
 
@@ -50,10 +51,10 @@ class GameInitializon(Extension):
     @slash_command(name="defcord_create", description="Create a new DEFCORD game.")
     async def create(self, ctx: SlashContext) -> None:
         """Create a game of DEFCORD"""
-        game = self.game_factory.create_game()  # Add the first player here
+        game = self.game_factory.create_game()
         nation_name = await self.register_player()
 
-        await game.add_player(ctx.user, nation_name)
+        await game.add_player(ctx, nation_name)
 
         embed = Embed(
             title="New game started!",
@@ -73,7 +74,7 @@ class GameInitializon(Extension):
             raise NotImplementedError
 
         nation_name = await self.register_player()
-        await game.add_player(ctx.user, nation_name)  # Ask nation name here
+        await game.add_player(ctx, nation_name)  # Ask nation name here
 
     async def register_player(self) -> Annotated[str, "Nation name"]:
         """Ask the player for information."""
