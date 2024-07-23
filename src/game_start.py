@@ -76,7 +76,7 @@ class GameInitializon(Extension):
         if game is None:
             raise NotImplementedError
 
-        nation_name = await self.register_player()
+        nation_name = await self.register_player(ctx)
         await game.add_player(ctx, nation_name)  # Ask nation name here
 
     async def register_player(self, ctx: SlashContext) -> Annotated[str, "Nation name"]:
@@ -94,8 +94,7 @@ class GameInitializon(Extension):
         await ctx.send_modal(modal=nation_name_modal)
 
         modal_ctx: ModalContext = await ctx.bot.wait_for_modal(nation_name_modal)
-        nation_name = modal_ctx.responses["nation_name"]
 
-        await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
+        # await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
 
-        return nation_name
+        return modal_ctx.responses["nation_name"]
