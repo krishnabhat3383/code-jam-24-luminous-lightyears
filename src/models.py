@@ -1,4 +1,3 @@
-
 from collections.abc import Callable
 from typing import Any, Literal, get_args
 
@@ -10,7 +9,7 @@ Stage = Literal[1, 2, 3]  # Adjustable
 
 @define
 class State:
-    """State the current state of the player."""
+    """The current state of the player."""
 
     nation_name: str
     stage: Stage = 1
@@ -20,7 +19,7 @@ class State:
     some_other_thing: int = 0
 
     def apply(self, consequence: dict) -> None:
-        """Apply the condition."""
+        """Apply the consequnces to current state."""
         for k, v in consequence.items():
             self.__dict__[k] += v
 
@@ -29,55 +28,53 @@ Consequence = dict[Any, Any]
 Condition = Callable[[State], bool] | None
 
 
+def always_true(_: State) -> Literal[True]:
+    """A stub function."""
+    return True
+
+
 @frozen
 class Template:
     """Make a template for the messages to be served."""
 
-    @staticmethod
-    def convert_condition(condition: Condition | None) -> Condition:
-        """Convert based on the condition."""
-        def always_true(_: State) -> True:
-            """Return True."""
-            return True
-
-        if condition is None:
-            return always_true
-
-        return condition
-
     text: str
-    choices: dict[None, Consequence]
-    condition: Condition = field(converter=convert_condition)
+    choices: dict[str, Consequence]  # Specify button color here somehow.
+    condition: Condition = field(converter=lambda condition: always_true if condition is None else condition)
 
     def format(self, state: State) -> str:
         """Format the text."""
         return self.text.format(asdict(state))
 
-    def to_embed(self, state: State) -> list[Embed, ActionRow]:
-        """Return embed and action row for the UI purpose."""
+    def to_embed(self, state: State) -> tuple[Embed, ActionRow]:
+        """Return embed and action row for UI."""
         buttons: list[Button] = []
-        for id, choice in enumerate(self.choices):
+
+        for id, choice in enumerate(self.choices.items()):
             button = Button(
-                label=f"{next(iter(choice.keys()))}",
-                ButtonStyle=ButtonStyle.BLURPLE,
+                label=f"{next(iter(choice.keys()))}",  # Something isn't right here
+                style=ButtonStyle.BLURPLE,
                 custom_id=f"Choice {id}",
             )
             buttons.append(button)
+
         action_row = ActionRow(*buttons)
+
         embed = Embed(
             title=state.nation_name,
             description=self.text,
             color=(0, 0, 255),
             # Can we access Actor here in this class? like this actor is saying this
+            # hazyfossa: good question
         )
-        return [embed, action_row]
+        return (embed, action_row)
+
 
 TotalStages = get_args(Stage)
 
 
 @frozen
 class StageGroup:
-    """State Stage Group."""
+    """A helper class to group templates based on their stage in game."""
 
     stage: Stage | tuple[Stage] | Literal["all"] = field(
         converter=lambda stage: TotalStages if stage == "all" else stage,
@@ -87,7 +84,7 @@ class StageGroup:
 
 @frozen
 class Actor:
-    """State Actor."""
+    """An in-game character."""
 
     name: str
     picture: str  # we'll need to serve these as static content probably
