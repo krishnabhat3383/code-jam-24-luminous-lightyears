@@ -29,7 +29,7 @@ Condition = Callable[[State], bool] | None
 
 
 def always_true(_: State) -> Literal[True]:
-    """A stub function."""
+    """Return True."""
     return True
 
 
