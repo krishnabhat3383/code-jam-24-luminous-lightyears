@@ -3,7 +3,7 @@ from typing import Annotated
 from attrs import define
 from interactions import SlashContext
 
-from models import State
+from src.models import State
 
 GameID = str
 
