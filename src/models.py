@@ -19,11 +19,11 @@ class State:
     some_other_thing: int = 0
 
     def apply(self, consequence: dict) -> None:
+        """Apply the condition."""
         for k, v in consequence.items():
             self.__dict__[k] += v
 
 
-# Consequence = Callable[[State], None]
 Consequence = dict[Any, Any]
 Condition = Callable[[State], bool] | None
 
@@ -36,7 +36,7 @@ class Template:
     def convert_condition(condition: Condition | None) -> Condition:
         """Convert based on the condition."""
         def always_true(_: State) -> True:
-            """True/"""
+            """Return True."""
             return True
 
         if condition is None:
@@ -57,7 +57,7 @@ class Template:
         buttons : list[Button] = []
         for id, choice in enumerate(self.choices):
             button = Button(
-                label = f"{list(choice.keys())[0]}",
+                label = f"{next(iter(choice.keys()))}",
                 ButtonStyle = ButtonStyle.BLURPLE,
                 custom_id = f"Choice {id}",
             )
@@ -71,20 +71,12 @@ class Template:
         )
         return [embed, action_row]
 
-# StageSpec = Stage | tuple[Stage] | Literal["all"]
 TotalStages = get_args(Stage)
 
 
 @frozen
 class StageGroup:
     """State Stage Group."""
-
-    # @staticmethod
-    # def convert_stage(stage: StageSpec) -> Stage | tuple[Stage]:
-    #     if stage == "all":
-    #         return TotalStages
-
-    #     return stage
 
     stage: Stage | tuple[Stage] | Literal["all"] = field(
         converter=lambda stage: TotalStages if stage == "all" else stage,
