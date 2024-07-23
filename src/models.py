@@ -55,16 +55,16 @@ class Template:
 
     def to_embed(self, state: State) -> list[Embed, ActionRow]:
         """Return embed and action row for the UI purpose."""
-        buttons : list[Button]=[]
+        buttons : list[Button] = []
         for id, choice in enumerate(self.choices):
-            button=Button(
+            button = Button(
                 label=f"{next(iter(choice.keys()))}",
                 ButtonStyle=ButtonStyle.BLURPLE,
                 custom_id=f"Choice {id}",
             )
             buttons.append(button)
         action_row = ActionRow(*buttons)
-        embed=Embed(
+        embed = Embed(
             title=state.nation_name,
             description=self.text,
             color=(0, 0, 255),
