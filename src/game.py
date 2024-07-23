@@ -1,6 +1,6 @@
 from interactions import User
 
-from models import State
+from src.models import State
 
 GameID = str
 
