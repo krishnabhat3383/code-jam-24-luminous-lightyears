@@ -1,3 +1,4 @@
+
 from collections.abc import Callable
 from typing import Any, Literal, get_args
 
@@ -54,18 +55,18 @@ class Template:
 
     def to_embed(self, state: State) -> list[Embed, ActionRow]:
         """Return embed and action row for the UI purpose."""
-        buttons : list[Button] = []
+        buttons : list[Button]=[]
         for id, choice in enumerate(self.choices):
-            button = Button(
-                label = f"{next(iter(choice.keys()))}",
-                ButtonStyle = ButtonStyle.BLURPLE,
-                custom_id = f"Choice {id}",
+            button=Button(
+                label=f"{next(iter(choice.keys()))}",
+                ButtonStyle=ButtonStyle.BLURPLE,
+                custom_id=f"Choice {id}",
             )
             buttons.append(button)
         action_row = ActionRow(*buttons)
-        embed = Embed(
-            title = state.nation_name,
-            description = self.text,
+        embed=Embed(
+            title=state.nation_name,
+            description=self.text,
             color=(0, 0, 255),
             # Can we access Actor here in this class? like this actor is saying this
         )
