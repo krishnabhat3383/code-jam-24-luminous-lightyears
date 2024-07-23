@@ -11,9 +11,10 @@ Actor("John the Farmer", "url_here",[
             },
         ),
         Template(
-            "Things are great, we managed to grow even more crops than expected. Thank you for your help, leader! \n Here, have this small gift from our community",
+            """Things are great, we managed to grow even more crops than expected.
+                Thank you for your help, leader! \n Here, have this small gift from our community""",
             choices = {"Thanks!": {"money": +15}},
-            condition = lambda state: state.loyalty > 70 and state.money < 300,
+            condition = lambda state: state.loyalty>70 and state.money<300,
         ),
     ]),
     StageGroup([2, 3], [
