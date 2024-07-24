@@ -3,7 +3,7 @@ from typing import Annotated
 from attrs import define
 from interactions import SlashContext
 
-from src.models import State
+from src.models import PlayerState
 
 GameID = str
 
@@ -11,7 +11,7 @@ GameID = str
 @define
 class Player:
     ctx: SlashContext
-    state: State
+    state: PlayerState
 
 
 class Game:
@@ -20,6 +20,6 @@ class Game:
         self.players: dict[Annotated[int, "discord id"], Player] = {}
 
     async def add_player(self, context: SlashContext, nation_name: str) -> None:
-        self.players[context.user.id] = Player(context, State(nation_name))
+        self.players[context.user.id] = Player(context, PlayerState(nation_name))
 
     async def loop(self) -> None: ...
