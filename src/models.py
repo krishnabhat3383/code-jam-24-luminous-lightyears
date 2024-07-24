@@ -13,17 +13,17 @@ class PlayerState:
 
     nation_name: str
 
-    # Money with the government 
+    # Money with the government
     money: float = 100
-    
+
     # How loyal people feel to the current government that you have created
     loyalty: float = 50
-    
-    # How vulnerable is the country from external threats  
+
+    # How vulnerable is the country from external threats
     security: float = 50
-    
+
     # Lower means entity sabotage and vice versa (might add this as a later future)
-    world_opinion: float = 50 
+    world_opinion: float = 50
 
     def apply(self, consequence: dict) -> None:
         """Apply the consequnces to current state."""
