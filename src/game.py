@@ -1,17 +1,40 @@
+import asyncio
 from typing import Annotated
 
-from attrs import define
-from interactions import SlashContext
+from interactions import Modal, ModalContext, ShortText, SlashContext
 
 from src.models import State
+from utils import error_embed
 
 GameID = str
 
 
-@define
 class Player:
-    ctx: SlashContext
-    state: State
+    def __init__(self, ctx: SlashContext) -> None:
+        self.ctx = ctx
+        self.state = None
+
+    async def register(self) -> None:
+        """Ask the player for information."""
+        registration_modal = Modal(
+            ShortText(
+                label="Provide your nation name",
+                custom_id="nation_name",
+                min_length=3,
+                max_length=50,
+                required=True,
+            ),
+            title="Player Information",
+        )
+        await self.ctx.send_modal(modal=registration_modal)
+
+        modal_ctx: ModalContext = await self.ctx.bot.wait_for_modal(registration_modal)
+
+        # await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
+
+        nation_name = modal_ctx.responses["nation_name"]
+
+        self.state = State(nation_name)
 
 
 class Game:
@@ -19,7 +42,17 @@ class Game:
         self.id = id
         self.players: dict[Annotated[int, "discord id"], Player] = {}
 
-    async def add_player(self, context: SlashContext, nation_name: str) -> None:
-        self.players[context.user.id] = Player(context, State(nation_name))
+    async def add_player(self, ctx: SlashContext) -> None:
+        self.players[ctx.user.id] = Player(ctx)
 
-    async def loop(self) -> None: ...
+    async def loop(self) -> None:
+        players = self.players.values()
+
+        while True:
+            try:
+                await asyncio.gather(*[self.tick(player) for player in players], return_exceptions=True)
+            except Exception:  # noqa: BLE001
+                for player in players:
+                    await player.ctx.send(embed=error_embed)
+
+    async def tick(self, player: Player) -> None: ...
