@@ -1,18 +1,42 @@
 import asyncio
 from typing import Annotated
 
+from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
-from src.models import State
 from utils import error_embed
 
 GameID = str
 
 
+@define
+class PlayerState:
+    """The current state of the player."""
+
+    nation_name: str
+
+    # Money with the government
+    money: float = 100
+
+    # How loyal people feel to the current government that you have created
+    loyalty: float = 50
+
+    # How vulnerable is the country from external threats
+    security: float = 50
+
+    # Lower means entity sabotage and vice versa (might add this as a later future)
+    world_opinion: float = 50
+
+    def apply(self, consequence: dict) -> None:
+        """Apply the consequnces to current state."""
+        for k, v in consequence.items():
+            self.__dict__[k] += v
+
+
 class Player:
     def __init__(self, ctx: SlashContext) -> None:
         self.ctx = ctx
-        self.state = None
+        self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
 
     async def register(self) -> None:
         """Ask the player for information."""
@@ -34,7 +58,7 @@ class Player:
 
         nation_name = modal_ctx.responses["nation_name"]
 
-        self.state = State(nation_name)
+        self.state = PlayerState(nation_name)
 
 
 class Game:

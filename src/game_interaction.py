@@ -11,7 +11,7 @@ from interactions import (
     slash_option,
 )
 
-from src.game import Game, GameID
+from game import Game, GameID
 
 if TYPE_CHECKING:
     from interactions import Client
