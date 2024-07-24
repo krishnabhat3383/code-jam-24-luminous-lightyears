@@ -31,7 +31,7 @@ class Template:
         """Get an embed for UI."""
         # Now you can access actor here
         return Embed(
-            title=player.state.nation_name,
+            title=f"{actor.actor.name} of {player.state.nation_name}",
             description=self.format(player.state),
             color=(0, 0, 255),
         )
