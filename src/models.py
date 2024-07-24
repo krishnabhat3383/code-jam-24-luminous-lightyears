@@ -2,15 +2,17 @@ from collections.abc import Callable
 from typing import Any, Literal, get_args
 
 from attrs import asdict, define, field, frozen
-from interactions.models.discord.embed import Embed
+from interactions import ActionRow, Button, ButtonStyle, Embed
+from interactions import ActionRow, Button, ButtonStyle, Embed
 
 Stage = Literal[1, 2, 3]  # Adjustable
 
 
 @define
-class State:
+class PlayerState:
+    """The current state of the player."""
+
     nation_name: str
-    stage: Stage = 1
 
     # Money with the government 
     money: float = 100
@@ -25,50 +27,62 @@ class State:
     world_opinion: float = 50 
 
     def apply(self, consequence: dict) -> None:
+        """Apply the consequnces to current state."""
         for k, v in consequence.items():
             self.__dict__[k] += v
 
 
-# Consequence = Callable[[State], None]
 Consequence = dict[Any, Any]
-Condition = Callable[[State], bool] | None
+Condition = Callable[[PlayerState], bool] | None
+
+
+def always_true(_: PlayerState) -> Literal[True]:
+    """Return True."""
+    return True
 
 
 @frozen
 class Template:
-    @staticmethod
-    def convert_condition(condition: Condition | None) -> Condition:
-        def always_true(_: State) -> True:
-            return True
+    """Make a template for the messages to be served."""
 
-        if condition is None:
-            return always_true
+    text: str
+    choices: dict[str, Consequence]  # Specify button color here somehow.
+    condition: Condition = field(converter=lambda condition: always_true if condition is None else condition)
 
-        return condition
+    def format(self, state: PlayerState) -> str:
+        """Format the text."""
+        return self.text.format(asdict(state))
 
-    string: str
-    choices: dict[None, Consequence]
-    condition: Condition = field(converter=convert_condition)
+    def to_embed(self, state: PlayerState) -> tuple[Embed, ActionRow]:
+        """Return embed and action row for UI."""
+        buttons: list[Button] = []
 
-    def format(self, state: State) -> str:
-        return self.string.format(asdict(state))
+        for id, choice in enumerate(self.choices.items()):
+            button = Button(
+                label=f"{next(iter(choice.keys()))}",  # Something isn't right here
+                style=ButtonStyle.BLURPLE,
+                custom_id=f"Choice {id}",
+            )
+            buttons.append(button)
 
-    def to_embed(self, state: State) -> Embed:
-        raise NotImplementedError
+        action_row = ActionRow(*buttons)
+
+        embed = Embed(
+            title=state.nation_name,
+            description=self.text,
+            color=(0, 0, 255),
+            # Can we access Actor here in this class? like this actor is saying this
+            # hazyfossa: good question
+        )
+        return (embed, action_row)
 
 
-# StageSpec = Stage | tuple[Stage] | Literal["all"]
 TotalStages = get_args(Stage)
 
 
 @frozen
 class StageGroup:
-    # @staticmethod
-    # def convert_stage(stage: StageSpec) -> Stage | tuple[Stage]:
-    #     if stage == "all":
-    #         return TotalStages
-
-    #     return stage
+    """A helper class to group templates based on their stage in game."""
 
     stage: Stage | tuple[Stage] | Literal["all"] = field(
         converter=lambda stage: TotalStages if stage == "all" else stage,
@@ -78,6 +92,8 @@ class StageGroup:
 
 @frozen
 class Actor:
+    """An in-game character."""
+
     name: str
     picture: str  # we'll need to serve these as static content probably
     templates: list[StageGroup]

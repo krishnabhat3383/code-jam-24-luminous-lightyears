@@ -20,7 +20,6 @@ async def on_ready() -> None:
 
 def get_token() -> str:
     """Try to read bot's token from environment or .env."""
-
     try:
         from dotenv import load_dotenv
 
@@ -56,5 +55,5 @@ if __name__ == "__main__":
     if DEV:
         bot.load_extension("interactions.ext.jurigged")
 
-    bot.load_extension("src.game_start")
+    bot.load_extension("src.game_interaction")
     bot.start(token=get_token())
