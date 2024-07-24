@@ -1,17 +1,21 @@
 import random
+from asyncio import create_task
 from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING, Annotated
 
 from interactions import (
     Embed,
     Extension,
+    Modal,
+    ModalContext,
     OptionType,
+    ShortText,
     SlashContext,
     slash_command,
     slash_option,
 )
 
-from game import Game, GameID
+from src.game import Game, GameID
 
 if TYPE_CHECKING:
     from interactions import Client
@@ -49,11 +53,11 @@ class GameInitializon(Extension):
 
     @slash_command(name="defcord_create", description="Create a new DEFCORD game.")
     async def create(self, ctx: SlashContext) -> None:
-        """Create a game of DEFCORD"""
+        """Create a game of DEFCORD."""
         game = self.game_factory.create_game()  # Add the first player here
-        nation_name = await self.register_player()
+        nation_name = await self.register_player(ctx)
 
-        await game.add_player(ctx.user, nation_name)
+        await game.add_player(ctx, nation_name)
 
         embed = Embed(
             title="New game started!",
@@ -72,9 +76,28 @@ class GameInitializon(Extension):
         if game is None:
             raise NotImplementedError
 
-        nation_name = await self.register_player()
-        await game.add_player(ctx.user, nation_name)  # Ask nation name here
+        nation_name = await self.register_player(ctx)
+        await game.add_player(ctx, nation_name)  # Ask nation name here
 
-    async def register_player(self) -> Annotated[str, "Nation name"]:
+    async def register_player(self, ctx: SlashContext) -> Annotated[str, "Nation name"]:
         """Ask the player for information."""
-        raise NotImplementedError
+        nation_name_modal = Modal(
+            ShortText(
+                label="Provide your nation name",
+                custom_id="nation_name",
+                min_length=3,
+                max_length=50,
+                required=True,
+            ),
+            title="Player Information",
+        )
+        await ctx.send_modal(modal=nation_name_modal)
+
+        modal_ctx: ModalContext = await ctx.bot.wait_for_modal(nation_name_modal)
+        nation_name = modal_ctx.responses["nation_name"]
+
+        # interaction needs a response or we need to defer it.
+        await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
+        # TODO: think about defer and its args.
+
+        return nation_name
