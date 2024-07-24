@@ -12,9 +12,17 @@ class State:
     nation_name: str
     stage: Stage = 1
 
-    money: int = 100
-    loyalty: int = 50
-    some_other_thing: int = 0
+    # Money with the government 
+    money: float = 100
+    
+    # How loyal people feel to the current government that you have created
+    loyalty: float = 50
+    
+    # How vulnerable is the country from external threats  
+    security: float = 50
+    
+    # Lower means entity sabotage and vice versa (might add this as a later future)
+    world_opinion: float = 50 
 
     def apply(self, consequence: dict) -> None:
         for k, v in consequence.items():
