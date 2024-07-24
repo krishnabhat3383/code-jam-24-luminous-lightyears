@@ -20,7 +20,6 @@ async def on_ready() -> None:
 
 def get_token() -> str:
     """Try to read bot's token from environment or .env."""
-
     try:
         from dotenv import load_dotenv
 
