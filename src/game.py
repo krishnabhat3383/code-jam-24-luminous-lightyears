@@ -34,9 +34,10 @@ class PlayerState:
 
 
 class Player:
-    def __init__(self, ctx: SlashContext) -> None:
+    def __init__(self, ctx: SlashContext, game: "Game") -> None:
         self.ctx = ctx
         self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
+        self.game = game
 
     async def register(self) -> None:
         """Ask the player for information."""
@@ -65,9 +66,10 @@ class Game:
     def __init__(self, id: GameID) -> None:
         self.id = id
         self.players: dict[Annotated[int, "discord id"], Player] = {}
+        self.stage: Stage = 1
 
     async def add_player(self, ctx: SlashContext) -> None:
-        self.players[ctx.user.id] = Player(ctx)
+        self.players[ctx.user.id] = Player(ctx, self)
 
     async def loop(self) -> None:
         players = self.players.values()

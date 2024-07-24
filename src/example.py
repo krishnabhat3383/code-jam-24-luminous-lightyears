@@ -1,16 +1,17 @@
-from models import Actor, StageGroup, Template
+from templating import Actor, StageGroup
+from templating import ChoiceTemplate as t
 
 # fmt: off
 Actor("John the Farmer", "url_here",[
     StageGroup(1, [
-        Template(
+        t(
             "Hello, leader of {nation_name}. Can you spare some money for our new farming equipment?",
             choices={
                 "Sure": {"money": -10, "loyalty": +5},
                 "Nope": {"loyalty": -5},
             },
         ),
-        Template(
+        t(
             "Things are great, we managed to grow even more crops than expected.\
                 Thank you for your help, leader! \n Here, have this small gift from our community",
             choices = {"Thanks!": {"money": +15}},
@@ -18,13 +19,13 @@ Actor("John the Farmer", "url_here",[
         ),
     ]),
     StageGroup(2, [
-        Template("O Great leader of {nation_name}! Please provide money to upgrade our equipment",
+        t("O Great leader of {nation_name}! Please provide money to upgrade our equipment",
                  choices = {
                      "Sure": {"money": -20, "loyalty": +5},
                      "Nope": {"loyalty": -5},
                  },
             ),
-        Template(
+        t(
             "Things are great, we managed to grow even more crops than expected.\
                 Thank you for your help, leader! \n Here, have this small gift from our community",
             choices = {"Thanks!": {"money": +30}},
