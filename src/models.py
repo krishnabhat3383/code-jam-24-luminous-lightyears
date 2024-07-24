@@ -4,10 +4,7 @@ from typing import Any, Literal, get_args
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
-from game import PlayerState
-
-Stage = Literal[1, 2, 3]  # Adjustable
-
+from game import PlayerState, Stage
 
 Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None

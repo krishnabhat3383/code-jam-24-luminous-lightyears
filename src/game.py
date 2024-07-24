@@ -1,5 +1,5 @@
 import asyncio
-from typing import Annotated
+from typing import Annotated, Literal
 
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
@@ -80,3 +80,6 @@ class Game:
                     await player.ctx.send(embed=error_embed)
 
     async def tick(self, player: Player) -> None: ...
+
+
+Stage = Literal[1, 2, 3]  # Adjustable
