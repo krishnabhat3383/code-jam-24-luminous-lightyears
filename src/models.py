@@ -3,7 +3,6 @@ from typing import Any, Literal, get_args
 
 from attrs import asdict, define, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
-from interactions import ActionRow, Button, ButtonStyle, Embed
 
 Stage = Literal[1, 2, 3]  # Adjustable
 
@@ -40,7 +39,7 @@ class Template:
 
     text: str
     choices: dict[str, Consequence]  # Specify button color here somehow.
-    condition: Condition = field(converter=lambda condition: always_true if condition is None else condition)
+    condition: Condition | None = field(converter=lambda condition: always_true if condition is None else condition)
 
     def format(self, state: PlayerState) -> str:
         """Format the text."""
