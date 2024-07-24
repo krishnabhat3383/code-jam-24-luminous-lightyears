@@ -8,7 +8,7 @@ Actor("John the Farmer", "url_here",[
             choices={
                 "Sure": {"money": -10, "loyalty": +5},
                 "Nope": {"loyalty": -5},
-            }
+            },
         ),
         Template(
             "Things are great, we managed to grow even more crops than expected.\
@@ -21,8 +21,8 @@ Actor("John the Farmer", "url_here",[
         Template("O Great leader of {nation_name}! Please provide money to upgrade our equipment",
                  choices = {
                      "Sure": {"money": -20, "loyalty": +5},
-                     "Nope": {"loyalty": -5}
-                 }
+                     "Nope": {"loyalty": -5},
+                 },
             ),
         Template(
             "Things are great, we managed to grow even more crops than expected.\
