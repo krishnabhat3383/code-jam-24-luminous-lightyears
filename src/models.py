@@ -3,17 +3,18 @@ from typing import Any, Literal, get_args
 
 from attrs import asdict, define, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
+from interactions import ActionRow, Button, ButtonStyle, Embed
 
 Stage = Literal[1, 2, 3]  # Adjustable
 
 
 @define
-class State:
+class PlayerState:
     """The current state of the player."""
 
     nation_name: str
-    stage: Stage = 1
 
+    # Player values that state the current position of player
     money: int = 100
     loyalty: int = 50
     some_other_thing: int = 0
@@ -25,10 +26,10 @@ class State:
 
 
 Consequence = dict[Any, Any]
-Condition = Callable[[State], bool] | None
+Condition = Callable[[PlayerState], bool] | None
 
 
-def always_true(_: State) -> Literal[True]:
+def always_true(_: PlayerState) -> Literal[True]:
     """Return True."""
     return True
 
@@ -41,11 +42,11 @@ class Template:
     choices: dict[str, Consequence]  # Specify button color here somehow.
     condition: Condition = field(converter=lambda condition: always_true if condition is None else condition)
 
-    def format(self, state: State) -> str:
+    def format(self, state: PlayerState) -> str:
         """Format the text."""
         return self.text.format(asdict(state))
 
-    def to_embed(self, state: State) -> tuple[Embed, ActionRow]:
+    def to_embed(self, state: PlayerState) -> tuple[Embed, ActionRow]:
         """Return embed and action row for UI."""
         buttons: list[Button] = []
 

@@ -55,5 +55,5 @@ if __name__ == "__main__":
     if DEV:
         bot.load_extension("interactions.ext.jurigged")
 
-    bot.load_extension("src.game_start")
+    bot.load_extension("src.game_interaction")
     bot.start(token=get_token())
