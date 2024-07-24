@@ -1,5 +1,4 @@
 import random
-from asyncio import create_task
 from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING, Annotated
 
@@ -45,7 +44,7 @@ class GameFactory:
         return self.store.get(game_id, None)
 
 
-class GameInitializon(Extension):
+class GameInteraction(Extension):
     """Control the extension entry point."""
 
     def __init__(self, _: "Client") -> None:
