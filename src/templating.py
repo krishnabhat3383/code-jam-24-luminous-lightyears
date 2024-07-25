@@ -11,11 +11,6 @@ Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None
 
 
-def always_true(_: PlayerState) -> Literal[True]:
-    """Return True."""
-    return True
-
-
 @frozen
 class Template:
     """Make a template for the messages to be served."""
@@ -31,7 +26,7 @@ class Template:
         """Get an embed for UI."""
         # Now you can access actor here
         return Embed(
-            title=f"{actor.actor.name} of {player.state.nation_name}",
+            title=f"{actor.name} of {player.state.nation_name}",
             description=self.format(player.state),
             color=(0, 0, 255),
         )
@@ -50,7 +45,13 @@ def not_none(var: Any | None) -> Any:  # noqa: ANN401 temporary workaround FIXME
 @frozen
 class ChoiceTemplate(Template):
     choices: dict[str, Consequence] = field(default=None, converter=not_none)  # Specify button color here somehow.
-    condition: Condition = always_true
+    condition: Condition | None = None
+
+    def is_available(self, player: Player) -> bool:
+        if self.condition is not None:
+            return self.condition(player.state)
+
+        return True
 
     async def ui(self, player: Player, actor: "Actor") -> None:
         """Send UI and apply consequences."""
@@ -82,14 +83,6 @@ class StageGroup:
     templates: list[Template]
 
 
-@frozen
-class ActorData:
-    """The data needed to make an embed for UI."""
-
-    name: str
-    picture: str  # we'll need to serve these as static content probably
-
-
 class StageData:
     def __init__(self, templates: list[Template]) -> None:
         self.templates = templates
@@ -101,7 +94,8 @@ class StageData:
 
 class Actor:
     def __init__(self, name: str, picture: str, templates: list[StageGroup]) -> None:
-        self.actor = ActorData(name, picture)
+        self.name = name
+        self.picture = picture
         self.stages = self.cast_stages(templates)
 
     def cast_stages(self, stage_groups: list[StageGroup]) -> dict[Stage, StageData]:  # Not the best code TODO: improve
