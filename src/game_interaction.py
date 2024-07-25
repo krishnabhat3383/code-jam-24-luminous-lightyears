@@ -1,7 +1,6 @@
 import random
 from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING
-
 from interactions import (
     Embed,
     Extension,
@@ -40,6 +39,11 @@ class GameFactory:
     def query_game(self, game_id: GameID) -> Game | None:
         return self.store.get(game_id, None)
 
+    def query_game_by_playerID(self, player_id) -> Game | None:
+        for game in self.store.values():
+            if player_id in game.players.keys():
+                return game
+        
 
 class GameInteraction(Extension):
     """Control the extension entry point."""
@@ -47,7 +51,12 @@ class GameInteraction(Extension):
     def __init__(self, _: "Client") -> None:
         self.game_factory = GameFactory()
 
-    @slash_command(name="defcord_create", description="Create a new DEFCORD game.")
+    @slash_command(name="defcord", description="Interact with defcord.")
+    async def defcord(ctx:SlashContext) -> None:
+        """Make the subcommand work, since it requires a function to latch off of."""
+        pass
+
+    @defcord.subcommand(sub_cmd_name="create", sub_cmd_description="Create a game of Defcord")
     async def create(self, ctx: SlashContext) -> None:
         """Create a game of DEFCORD."""
         game = self.game_factory.create_game()  # Add the first player here
@@ -62,7 +71,8 @@ class GameInteraction(Extension):
 
         await ctx.send(embed=embed)
 
-    @slash_command(name="defcord_join", description="Join a game of DEFCORD.")
+
+    @defcord.subcommand(sub_cmd_name="Join", sub_cmd_description="Join a game of Defcord")
     @slash_option("invite", "The invite code for the game", required=True, opt_type=OptionType.STRING)
     async def join(self, ctx: SlashContext, invite: str) -> None:
         """Join a game of DEFCORD."""
@@ -72,3 +82,15 @@ class GameInteraction(Extension):
             raise NotImplementedError
 
         await game.add_player(ctx)
+
+
+    @defcord.subcommand(sub_cmd_name="Leave", sub_cmd_description="Leave a game of Defcord")
+    async def leave(self, ctx: SlashContext) -> None:
+        """Leave the current game of defcord"""
+        game = self.game_factory.query_game_by_playerID(ctx.user.id)
+        
+        if game is None:
+            raise NotImplementedError
+        
+        await game.remove_player(ctx)
+        

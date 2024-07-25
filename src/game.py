@@ -1,5 +1,4 @@
 import asyncio
-import contextlib
 from typing import Annotated, Literal
 
 from attrs import define
@@ -84,7 +83,7 @@ class Game:
         try:
             del self.players[player_to_delete]
         except KeyError:
-            contextlib.suppress(KeyError)
+            raise NotImplementedError
         # Need to pass this error to the user, that you are in no game
 
     async def loop(self) -> None:
