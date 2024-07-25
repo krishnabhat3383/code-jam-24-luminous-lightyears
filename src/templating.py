@@ -77,9 +77,16 @@ total_stages = get_args(Stage)
 class StageGroup:
     """A helper class to group templates based on their stage in game."""
 
-    stage: Stage | tuple[Stage] | Literal["all"] = field(
-        converter=lambda stage: total_stages if stage == "all" else stage,
-    )
+    @staticmethod
+    def convert_stage(stage: Stage | list[Stage] | Literal["all"]) -> list[Stage]:
+        if stage == "all":
+            return list(total_stages)
+        if isinstance(stage, int):
+            return [stage]
+
+        return stage
+
+    stage: Stage | list[Stage] | Literal["all"] = field(converter=convert_stage)
     templates: list[Template]
 
 
@@ -101,22 +108,14 @@ class Actor:
     def cast_stages(self, stage_groups: list[StageGroup]) -> dict[Stage, StageData]:  # Not the best code TODO: improve
         stages: dict[Stage, StageData] = {}
 
-        for stage in total_stages:
+        for stage_slot in total_stages:
             stage_templates = []
 
             for stage_group in stage_groups:
-                template_stage = stage_group.stage
+                if stage_slot in stage_group.stage:
+                    stage_templates += stage_group.templates
 
-                if isinstance(template_stage, int):
-                    if template_stage != stage:
-                        continue
-
-                elif stage not in template_stage:
-                    continue
-
-                stage_templates += stage_group.templates
-
-            stages[stage] = StageData(stage_templates)
+            stages[stage_slot] = StageData(stage_templates)
 
         return stages
 
