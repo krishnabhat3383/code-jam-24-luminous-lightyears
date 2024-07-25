@@ -4,7 +4,7 @@ from typing import Annotated, Literal
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
-from utils import error_embed
+from src.utils import error_embed
 
 GameID = str
 
