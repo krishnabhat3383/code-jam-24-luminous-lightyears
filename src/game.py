@@ -1,9 +1,12 @@
 import asyncio
+from re import template
 from typing import Annotated, Literal
 
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
+
+from src.characters import all_characters
 from src.utils import error_embed
 
 GameID = str
@@ -81,7 +84,10 @@ class Game:
                 for player in players:
                     await player.ctx.send(embed=error_embed)
 
-    async def tick(self, player: Player) -> None: ...
+    async def tick(self, player: Player) -> None:
+        character = all_characters.get_random()
+
+        await character.send(player)
 
 
 Stage = Literal[1, 2, 3]  # Adjustable
