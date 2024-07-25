@@ -5,11 +5,12 @@ from typing import Any, Literal, get_args
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
-from src.game import Player, PlayerState, Stage
+from src.player import Player, PlayerState
 from src.weighted_random import WeightedList
 
 Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None
+Stage = Literal[1, 2, 3]  # Adjustable
 
 
 @frozen

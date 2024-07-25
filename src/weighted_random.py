@@ -17,6 +17,7 @@ class WeightedList(Generic[T]):
             self.weights = [value.weight for value in values]
         else:
             self.values = []
+            self.weights = []
 
     def append(self, value: T) -> None:
         self.values.append(value)
