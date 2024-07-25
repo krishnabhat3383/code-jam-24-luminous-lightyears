@@ -1,10 +1,9 @@
 import asyncio
-from re import template
+import contextlib
 from typing import Annotated, Literal
 
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
-
 
 from src.characters import all_characters
 from src.utils import error_embed
@@ -37,6 +36,8 @@ class PlayerState:
 
 
 class Player:
+    """Define and register the data related to the player."""
+
     def __init__(self, ctx: SlashContext, game: "Game") -> None:
         self.ctx = ctx
         self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
@@ -66,15 +67,28 @@ class Player:
 
 
 class Game:
+    """Define and play the game."""
+
     def __init__(self, id: GameID) -> None:
         self.id = id
         self.players: dict[Annotated[int, "discord id"], Player] = {}
         self.stage: Stage = 1
 
     async def add_player(self, ctx: SlashContext) -> None:
+        """Add player to the game."""
         self.players[ctx.user.id] = Player(ctx, self)
 
+    async def remove_player(self, ctx: SlashContext) -> None:
+        """Remove player from the game."""
+        player_to_delete = ctx.user.id
+        try:
+            del self.players[player_to_delete]
+        except KeyError:
+            contextlib.suppress(KeyError)
+        # Need to pass this error to the user, that you are in no game
+
     async def loop(self) -> None:
+        """Define the game loop."""
         players = self.players.values()
 
         while True:
@@ -85,6 +99,7 @@ class Game:
                     await player.ctx.send(embed=error_embed)
 
     async def tick(self, player: Player) -> None:
+        """Interactions with the player, via the game."""
         character = all_characters.get_random()
 
         await character.send(player)
