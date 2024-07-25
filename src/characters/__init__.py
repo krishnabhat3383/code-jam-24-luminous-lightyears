@@ -2,8 +2,8 @@ from importlib import import_module
 from logging import getLogger
 from pathlib import Path
 
-from templating import Actor
-from weighted_random import WeightedList
+from src.templating import Actor
+from src.weighted_random import WeightedList
 
 log = getLogger("character-init")
 

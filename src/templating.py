@@ -5,8 +5,8 @@ from typing import Any, Literal, get_args
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
-from game import Player, PlayerState, Stage
-from weighted_random import WeightedList
+from src.game import Player, PlayerState, Stage
+from src.weighted_random import WeightedList
 
 Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None
