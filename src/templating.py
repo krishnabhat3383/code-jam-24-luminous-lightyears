@@ -1,11 +1,16 @@
+import importlib.util
+import logging
 import random
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any, Literal, get_args
 
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
 from game import Player, PlayerState, Stage
+
+logger = logging.getLogger("defcon-internal")
 
 Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None
@@ -125,3 +130,20 @@ class Actor:
         template = stage.get_random()
 
         await template.ui(target, self)
+
+
+def get_characters() -> list:
+    """Return a list of characters imported from all the character definition files."""
+    characters = []
+
+    for path in Path("src/resources/characters").rglob("*.py"):
+        try:
+            spec = importlib.util.spec_from_file_location(path.name.strip(".py"), str(path))
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+
+            if character := getattr(module, "character", None):
+                characters.append(character)
+        except Exception:
+            logger.exception("Exception raised when trying to import characters. current_path %s", str(path))
+    return characters
