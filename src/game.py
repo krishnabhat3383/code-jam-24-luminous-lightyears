@@ -5,6 +5,7 @@ from typing import Annotated, Literal
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
+
 from src.characters import all_characters
 from src.utils import error_embed
 
