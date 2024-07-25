@@ -53,8 +53,8 @@ class Player:
 
         modal_ctx: ModalContext = await self.ctx.bot.wait_for_modal(registration_modal)
 
-        # await modal_ctx.send(f"<@{ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
-
         nation_name = modal_ctx.responses["nation_name"]
+
+        await modal_ctx.send(f"<@{self.ctx.user.id}> You are playing as a leader of {nation_name}", ephemeral=True)
 
         self.state = PlayerState(nation_name)

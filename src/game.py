@@ -21,7 +21,9 @@ class Game:
         self.stage: Stage = 1
 
     async def add_player(self, ctx: SlashContext) -> None:
-        self.players[ctx.user.id] = Player(ctx, self)
+        player = Player(ctx, self)
+        await player.register()
+        self.players[ctx.user.id] = player
 
     async def loop(self) -> None:
         players = self.players.values()
@@ -35,5 +37,4 @@ class Game:
 
     async def tick(self, player: Player) -> None:
         character = all_characters.get_random()
-
         await character.send(player)

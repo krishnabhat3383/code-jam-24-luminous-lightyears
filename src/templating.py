@@ -22,7 +22,7 @@ class Template:
 
     def format(self, state: PlayerState) -> str:
         """Format the text."""
-        return self.text.format(asdict(state))
+        return self.text.format(**asdict(state))
 
     def to_embed(self, player: Player, actor: "Actor") -> Embed:
         """Get an embed for UI."""
@@ -34,7 +34,7 @@ class Template:
         )
 
     async def ui(self, player: Player, actor: "Actor") -> None:
-        await player.ctx.send(embed=self.to_embed(player, actor))
+        await player.ctx.send(embed=self.to_embed(player, actor), ephemeral=True)
 
 
 def not_none(var: Any | None) -> Any:  # noqa: ANN401 temporary workaround FIXME
@@ -61,7 +61,7 @@ class ChoiceTemplate(Template):
 
         for id, choice in enumerate(self.choices.items()):
             button = Button(
-                label=f"{next(iter(choice.keys()))}",  # Something isn't right here
+                label=f"{next(iter(choice))}",
                 style=ButtonStyle.BLURPLE,
                 custom_id=f"Choice {id}",
             )
@@ -69,7 +69,7 @@ class ChoiceTemplate(Template):
 
         embed = self.to_embed(player, actor)
 
-        await player.ctx.send(embed=embed, action_row=ActionRow(*buttons))
+        await player.ctx.send(embed=embed, components=ActionRow(*buttons), ephemeral=True)
 
 
 total_stages = get_args(Stage)
@@ -126,5 +126,4 @@ class Actor:
     async def send(self, target: Player) -> None:
         stage = self.stages[target.game.stage]
         template = stage.get_random()
-
         await template.ui(target, self)
