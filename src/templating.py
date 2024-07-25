@@ -100,13 +100,10 @@ class StageData:
         return random.choices(self.templates, weights=self.weights, k=1)[0]  # noqa: S311 Not for cryptographic purposes
 
 
+@frozen
 class Actor:
-    def __init__(self, name: str, picture: str, templates: list[StageGroup]) -> None:
-        self.name = name
-        self.picture = picture
-        self.stages = self.cast_stages(templates)
-
-    def cast_stages(self, stage_groups: list[StageGroup]) -> dict[Stage, WeightedList[Template]]:
+    @staticmethod
+    def cast_stages(stage_groups: list[StageGroup]) -> dict[Stage, WeightedList[Template]]:
         stages: dict[Stage, WeightedList[Template]] = {}
 
         for stage_slot in total_stages:
@@ -119,6 +116,11 @@ class Actor:
             stages[stage_slot] = WeightedList(stage_templates)
 
         return stages
+
+    name: str
+    picture: str
+    stages: dict[Stage, WeightedList[Template]] = field(converter=cast_stages)
+    weight: int = 100
 
     async def send(self, target: Player) -> None:
         stage = self.stages[target.game.stage]
