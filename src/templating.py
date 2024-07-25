@@ -6,6 +6,7 @@ from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
 from game import Player, PlayerState, Stage
+from weighted_random import WeightedList
 
 Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None
@@ -105,8 +106,8 @@ class Actor:
         self.picture = picture
         self.stages = self.cast_stages(templates)
 
-    def cast_stages(self, stage_groups: list[StageGroup]) -> dict[Stage, StageData]:  # Not the best code TODO: improve
-        stages: dict[Stage, StageData] = {}
+    def cast_stages(self, stage_groups: list[StageGroup]) -> dict[Stage, WeightedList[Template]]:
+        stages: dict[Stage, WeightedList[Template]] = {}
 
         for stage_slot in total_stages:
             stage_templates = []
@@ -115,7 +116,7 @@ class Actor:
                 if stage_slot in stage_group.stage:
                     stage_templates += stage_group.templates
 
-            stages[stage_slot] = StageData(stage_templates)
+            stages[stage_slot] = WeightedList(stage_templates)
 
         return stages
 
