@@ -5,7 +5,8 @@ from typing import Any, Literal, get_args
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
-from game import Player, PlayerState, Stage
+from src.game import Player, PlayerState, Stage
+from src.weighted_random import WeightedList
 
 Consequence = dict[Any, Any]
 Condition = Callable[[PlayerState], bool] | None
@@ -77,9 +78,16 @@ total_stages = get_args(Stage)
 class StageGroup:
     """A helper class to group templates based on their stage in game."""
 
-    stage: Stage | tuple[Stage] | Literal["all"] = field(
-        converter=lambda stage: total_stages if stage == "all" else stage,
-    )
+    @staticmethod
+    def convert_stage(stage: Stage | list[Stage] | Literal["all"]) -> list[Stage]:
+        if stage == "all":
+            return list(total_stages)
+        if isinstance(stage, int):
+            return [stage]
+
+        return stage
+
+    stage: Stage | list[Stage] | Literal["all"] = field(converter=convert_stage)
     templates: list[Template]
 
 
@@ -92,33 +100,27 @@ class StageData:
         return random.choices(self.templates, weights=self.weights, k=1)[0]  # noqa: S311 Not for cryptographic purposes
 
 
+@frozen
 class Actor:
-    def __init__(self, name: str, picture: str, templates: list[StageGroup]) -> None:
-        self.name = name
-        self.picture = picture
-        self.stages = self.cast_stages(templates)
+    @staticmethod
+    def cast_stages(stage_groups: list[StageGroup]) -> dict[Stage, WeightedList[Template]]:
+        stages: dict[Stage, WeightedList[Template]] = {}
 
-    def cast_stages(self, stage_groups: list[StageGroup]) -> dict[Stage, StageData]:  # Not the best code TODO: improve
-        stages: dict[Stage, StageData] = {}
-
-        for stage in total_stages:
+        for stage_slot in total_stages:
             stage_templates = []
 
             for stage_group in stage_groups:
-                template_stage = stage_group.stage
+                if stage_slot in stage_group.stage:
+                    stage_templates += stage_group.templates
 
-                if isinstance(template_stage, int):
-                    if template_stage != stage:
-                        continue
-
-                elif stage not in template_stage:
-                    continue
-
-                stage_templates += stage_group.templates
-
-            stages[stage] = StageData(stage_templates)
+            stages[stage_slot] = WeightedList(stage_templates)
 
         return stages
+
+    name: str
+    picture: str
+    stages: dict[Stage, WeightedList[Template]] = field(converter=cast_stages)
+    weight: int = 100
 
     async def send(self, target: Player) -> None:
         stage = self.stages[target.game.stage]
