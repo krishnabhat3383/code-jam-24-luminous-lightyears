@@ -1,5 +1,5 @@
 import random
-from typing import Any, Generic, Protocol, TypeVar
+from typing import Generic, Protocol, TypeVar
 
 
 class SupportsWeight(Protocol):
