@@ -86,18 +86,19 @@ class Game:
 
     async def tick(self, player: Player) -> None:
         character = all_characters.get_random()
-        # The sleep times are subject to change, based on hwo the actual gameplay feels
+        # The sleep times are subject to change, based on how the actual gameplay feels
+        # The randomness gives a variability of mentioned in the brackets 
         match self.stage:
             case 1:
-                asyncio.sleep(15)
+                asyncio.sleep(15+(random.uniform(-2,2)))
                 await character.send(player)
 
             case 2:
-                asyncio.sleep(13)
+                asyncio.sleep(13+(random.uniform(-2,1.5)))
                 await character.send(player)
 
             case 1:
-                asyncio.sleep(10)
+                asyncio.sleep(10+(random.uniform(-2,1)))
                 await character.send(player)
 
 Stage = Literal[1, 2, 3]  # Adjustable
