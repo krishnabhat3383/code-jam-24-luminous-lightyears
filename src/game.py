@@ -8,7 +8,7 @@ from interactions import SlashContext
 from src.characters import all_characters
 from src.player import Player
 from src.templating import total_stages
-from src.utils import error_embed
+from src.const import error_embed
 
 if TYPE_CHECKING:
     from src.templating import Stage
