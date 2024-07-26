@@ -32,8 +32,8 @@ class PlayerState:
 
     def apply(self, consequence: dict) -> None:
         """Apply the consequnces to current state."""
-        for k, v in consequence.items():
-            self.__dict__[k] += v
+        for key, value in consequence.items():
+            self.__dict__[key] += value
 
 
 class Player:
