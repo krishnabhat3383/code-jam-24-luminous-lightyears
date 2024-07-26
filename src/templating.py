@@ -1,4 +1,3 @@
-import random
 from collections.abc import Callable
 from typing import Any, Literal, get_args
 
@@ -19,10 +18,17 @@ class Template:
 
     text: str = field()
     weight: int = 100
+    condition: Condition | None = None
 
     def format(self, state: PlayerState) -> str:
         """Format the text."""
         return self.text.format(**asdict(state))
+
+    def is_available(self, state: PlayerState) -> bool:
+        if self.condition is not None:
+            return self.condition(state)
+
+        return True
 
     def to_embed(self, player: Player, actor: "Actor") -> Embed:
         """Get an embed for UI."""
@@ -47,13 +53,6 @@ def not_none(var: Any | None) -> Any:  # noqa: ANN401 temporary workaround FIXME
 @frozen
 class ChoiceTemplate(Template):
     choices: dict[str, Consequence] = field(default=None, converter=not_none)  # Specify button color here somehow.
-    condition: Condition | None = None
-
-    def is_available(self, player: Player) -> bool:
-        if self.condition is not None:
-            return self.condition(player.state)
-
-        return True
 
     async def ui(self, player: Player, actor: "Actor") -> None:
         """Send UI and apply consequences."""
@@ -92,15 +91,6 @@ class StageGroup:
     templates: list[Template]
 
 
-class StageData:
-    def __init__(self, templates: list[Template]) -> None:
-        self.templates = templates
-        self.weights = [template.weight for template in self.templates]
-
-    def get_random(self) -> Template:
-        return random.choices(self.templates, weights=self.weights, k=1)[0]  # noqa: S311 Not for cryptographic purposes
-
-
 @frozen
 class Actor:
     @staticmethod
@@ -125,5 +115,5 @@ class Actor:
 
     async def send(self, target: Player) -> None:
         stage = self.stages[target.game.stage]
-        template = stage.get_random()
+        template = stage.get_random(target.state)
         await template.ui(target, self)
