@@ -1,7 +1,7 @@
 import asyncio
 import random
 from typing import Annotated, Literal
-
+import datetime
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
@@ -69,13 +69,21 @@ class Game:
         self.id = id
         self.players: dict[Annotated[int, "discord id"], Player] = {}
         self.stage: Stage = 1
-        self.max_time = random.randrange(12,16)
+        self.max_time: float = random.uniform(12.5, 16)
+        
+        self.cumm_percent_time_per_stage : list[float]= [0.25, 0.6, 1] 
+        # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
+        
+        self.start_time = datetime.datetime.now()
 
     async def add_player(self, ctx: SlashContext) -> None:
         self.players[ctx.user.id] = Player(ctx, self)
 
     async def loop(self) -> None:
         players = self.players.values()
+        game_time :float = (datetime.datetime.now() - self.start_time) / datetime.timedelta(minutes=1)
+        if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (game_time < self.max_time):
+            self.stage += 1 
 
         while True:
             try:
@@ -87,7 +95,7 @@ class Game:
     async def tick(self, player: Player) -> None:
         character = all_characters.get_random()
         # The sleep times are subject to change, based on how the actual gameplay feels
-        # The randomness gives a variability of mentioned in the brackets 
+        # The randomness gives a variability between the values mentioned in the brackets 
         match self.stage:
             case 1:
                 asyncio.sleep(15+(random.uniform(-2,2)))
