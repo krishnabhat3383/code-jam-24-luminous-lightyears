@@ -73,7 +73,7 @@ class GameInteraction(Extension):
 
         await ctx.send(embed=embed)
 
-    @defcord.subcommand(sub_cmd_name="Join", sub_cmd_description="Join a game of Defcord")
+    @defcord.subcommand(sub_cmd_name="join", sub_cmd_description="Join a game of Defcord")
     @slash_option("invite", "The invite code for the game", required=True, opt_type=OptionType.STRING)
     async def join(self, ctx: SlashContext, invite: str) -> None:
         """Join a game of DEFCORD."""
@@ -84,7 +84,7 @@ class GameInteraction(Extension):
 
         await game.add_player(ctx)
 
-    @defcord.subcommand(sub_cmd_name="Leave", sub_cmd_description="Leave a game of Defcord")
+    @defcord.subcommand(sub_cmd_name="leave", sub_cmd_description="Leave a game of Defcord")
     async def leave(self, ctx: SlashContext) -> None:
         """Leave the current game of defcord"""
         game = self.game_factory.query_game(player_id=ctx.user.id)
