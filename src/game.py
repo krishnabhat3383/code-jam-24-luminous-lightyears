@@ -79,7 +79,6 @@ class Game:
         self.cumm_percent_time_per_stage : list[float]= [0.25, 0.6, 1]
         # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
 
-        self.start_time = datetime.now()
 
     async def add_player(self, ctx: SlashContext) -> None:
         """Add player to the game."""
@@ -87,13 +86,14 @@ class Game:
 
     async def loop(self) -> None:
         """Define the main loop of the game."""
+        self.start_time = datetime.now()
         players = self.players.values()
-        game_time :float = (datetime.now() - self.start_time) / timedelta(minutes=1)
-        if ((game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time)
-            and (game_time < self.max_time)):
-            self.stage += 1
 
         while True:
+            game_time :float = (datetime.now() - self.start_time) / timedelta(minutes=1)
+            if ((game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time)
+                and (game_time < self.max_time)):
+                self.stage += 1
             try:
                 await asyncio.gather(*[self.tick(player) for player in players], return_exceptions=True)
             except Exception:  # noqa: BLE001
