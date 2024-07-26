@@ -1,5 +1,5 @@
 import asyncio
-from re import template
+import random
 from typing import Annotated, Literal
 
 from attrs import define
@@ -69,6 +69,7 @@ class Game:
         self.id = id
         self.players: dict[Annotated[int, "discord id"], Player] = {}
         self.stage: Stage = 1
+        self.max_time = random.randrange(12,16)
 
     async def add_player(self, ctx: SlashContext) -> None:
         self.players[ctx.user.id] = Player(ctx, self)
@@ -85,8 +86,18 @@ class Game:
 
     async def tick(self, player: Player) -> None:
         character = all_characters.get_random()
+        # The sleep times are subject to change, based on hwo the actual gameplay feels
+        match self.stage:
+            case 1:
+                asyncio.sleep(15)
+                await character.send(player)
 
-        await character.send(player)
+            case 2:
+                asyncio.sleep(13)
+                await character.send(player)
 
+            case 1:
+                asyncio.sleep(10)
+                await character.send(player)
 
 Stage = Literal[1, 2, 3]  # Adjustable
