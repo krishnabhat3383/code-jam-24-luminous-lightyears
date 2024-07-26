@@ -78,6 +78,7 @@ class Game:
 
         self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
         # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
+        self.values_to_check : list[str] = ['loyalty', 'money', 'security', 'world_opinion']
 
     async def add_player(self, ctx: SlashContext) -> None:
         """Add player to the game."""
@@ -106,6 +107,11 @@ class Game:
         character = all_characters.get_random()
         # The sleep times are subject to change, based on how the actual gameplay feels
         # The randomness gives a variability between the values mentioned in the brackets
+
+        if any(getattr(player.state, attr) < 0  for attr in self.values_to_check):
+            # Some value is negative hence need to send the losing message
+            raise NotImplementedError
+
         match self.stage:
             case 1:
                 sleep_time = 15 + (random.uniform(-2, 2))
