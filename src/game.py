@@ -1,7 +1,7 @@
 import asyncio
 import random
 from datetime import datetime, timedelta
-from typing import Annotated, Literal
+from typing import Annotated, TYPE_CHECKING
 
 from interactions import SlashContext
 
@@ -9,7 +9,7 @@ from src.characters import all_characters
 from src.player import Player
 from src.utils import error_embed
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from src.templating import Stage
 
 GameID = str
@@ -26,7 +26,7 @@ class Game:
 
         self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
         # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
-        self.values_to_check : list[str] = ['loyalty', 'money', 'security', 'world_opinion']
+        self.values_to_check: list[str] = ["loyalty", "money", "security", "world_opinion"]
 
     async def add_player(self, ctx: SlashContext) -> None:
         player = Player(ctx, self)
@@ -57,7 +57,7 @@ class Game:
         # The sleep times are subject to change, based on how the actual gameplay feels
         # The randomness gives a variability between the values mentioned in the brackets
 
-        if any(getattr(player.state, attr) < 0  for attr in self.values_to_check):
+        if any(getattr(player.state, attr) < 0 for attr in self.values_to_check):
             # Some value is negative hence need to send the losing message
             raise NotImplementedError
 

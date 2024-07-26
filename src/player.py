@@ -1,9 +1,9 @@
-import typing
+from typing import TYPE_CHECKING
 
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from src.game import Game
 
 
