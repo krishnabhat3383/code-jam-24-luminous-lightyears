@@ -1,11 +1,11 @@
-import typing
 from importlib import import_module
 from logging import getLogger
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from src.weighted_random import WeightedList
 
-if typing.TYPE_CHECKING:
+if TYPE_CHECKING:
     from src.templating import Actor
 
 log = getLogger("character-init")
