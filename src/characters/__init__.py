@@ -1,13 +1,16 @@
 from importlib import import_module
 from logging import getLogger
 from pathlib import Path
+from typing import TYPE_CHECKING
 
-from src.templating import Actor
 from src.weighted_random import WeightedList
+
+if TYPE_CHECKING:
+    from src.templating import Actor
 
 log = getLogger("character-init")
 
-all_characters: WeightedList[Actor] = WeightedList()
+all_characters: WeightedList["Actor"] = WeightedList()
 
 for file in Path(__file__).parent.glob("*.py"):
     module = file.name.split(".")[0]
