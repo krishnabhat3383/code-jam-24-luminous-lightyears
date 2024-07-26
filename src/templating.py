@@ -1,14 +1,16 @@
 from collections.abc import Callable
-from typing import Any, Literal, get_args
+from typing import TYPE_CHECKING, Any, Literal, get_args
 
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
-from src.player import Player, PlayerState
 from src.weighted_random import WeightedList
 
+if TYPE_CHECKING:
+    from src.player import Player, PlayerState
+
 Consequence = dict[Any, Any]
-Condition = Callable[[PlayerState], bool] | None
+Condition = Callable[["PlayerState"], bool] | None
 Stage = Literal[1, 2, 3]  # Adjustable
 
 
@@ -20,17 +22,17 @@ class Template:
     weight: int = 100
     condition: Condition | None = None
 
-    def format(self, state: PlayerState) -> str:
+    def format(self, state: "PlayerState") -> str:
         """Format the text."""
         return self.text.format(**asdict(state))
 
-    def is_available(self, state: PlayerState) -> bool:
+    def is_available(self, state: "PlayerState") -> bool:
         if self.condition is not None:
             return self.condition(state)
 
         return True
 
-    def to_embed(self, player: Player, actor: "Actor") -> Embed:
+    def to_embed(self, player: "Player", actor: "Actor") -> Embed:
         """Get an embed for UI."""
         # Now you can access actor here
         return Embed(
@@ -39,7 +41,7 @@ class Template:
             color=(0, 0, 255),
         )
 
-    async def ui(self, player: Player, actor: "Actor") -> None:
+    async def ui(self, player: "Player", actor: "Actor") -> None:
         await player.ctx.send(embed=self.to_embed(player, actor), ephemeral=True)
 
 
@@ -54,7 +56,7 @@ def not_none(var: Any | None) -> Any:  # noqa: ANN401 temporary workaround FIXME
 class ChoiceTemplate(Template):
     choices: dict[str, Consequence] = field(default=None, converter=not_none)  # Specify button color here somehow.
 
-    async def ui(self, player: Player, actor: "Actor") -> None:
+    async def ui(self, player: "Player", actor: "Actor") -> None:
         """Send UI and apply consequences."""
         buttons: list[Button] = []
 
@@ -113,7 +115,12 @@ class Actor:
     stages: dict[Stage, WeightedList[Template]] = field(converter=cast_stages)
     weight: int = 100
 
-    async def send(self, target: Player) -> None:
+    def is_available(self, state: "PlayerState") -> bool:
+        # Add stuff here if you want to add actors which appear on condition.
+        _ = state
+        return True
+
+    async def send(self, target: "Player") -> None:
         stage = self.stages[target.game.stage]
         template = stage.get_random(target.state)
         await template.ui(target, self)

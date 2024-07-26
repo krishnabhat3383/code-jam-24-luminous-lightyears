@@ -1,12 +1,13 @@
 import asyncio
 import random
 from datetime import datetime, timedelta
-from typing import Annotated, TYPE_CHECKING
+from typing import TYPE_CHECKING, Annotated
 
 from interactions import SlashContext
 
 from src.characters import all_characters
 from src.player import Player
+from src.templating import total_stages
 from src.utils import error_embed
 
 if TYPE_CHECKING:
@@ -43,7 +44,9 @@ class Game:
             if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (
                 game_time < self.max_time
             ):
-                self.stage += 1
+                self.stage = total_stages[
+                    total_stages.index(self.stage) + 1
+                ]  # This isn't the best, but it won't go out of bounds and doesn't break typing
 
             try:
                 await asyncio.gather(*[self.tick(player) for player in players], return_exceptions=True)
@@ -53,7 +56,7 @@ class Game:
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
-        character = all_characters.get_random()
+        character = all_characters.get_random(player.state)
         # The sleep times are subject to change, based on how the actual gameplay feels
         # The randomness gives a variability between the values mentioned in the brackets
 
