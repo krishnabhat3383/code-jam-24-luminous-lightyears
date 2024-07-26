@@ -76,9 +76,8 @@ class Game:
         self.stage: Stage = 1
         self.max_time: float = random.uniform(12.5, 16)
 
-        self.cumm_percent_time_per_stage : list[float]= [0.25, 0.6, 1]
+        self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
         # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
-
 
     async def add_player(self, ctx: SlashContext) -> None:
         """Add player to the game."""
@@ -90,13 +89,15 @@ class Game:
         players = self.players.values()
 
         while True:
-            game_time :float = (datetime.now() - self.start_time) / timedelta(minutes=1)
-            if ((game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time)
-                and (game_time < self.max_time)):
+            game_time: float = (datetime.now() - self.start_time) / timedelta(minutes=1)
+            if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (
+                game_time < self.max_time
+            ):
                 self.stage += 1
+
             try:
                 await asyncio.gather(*[self.tick(player) for player in players], return_exceptions=True)
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001 this is intentional
                 for player in players:
                     await player.ctx.send(embed=error_embed)
 
@@ -107,15 +108,16 @@ class Game:
         # The randomness gives a variability between the values mentioned in the brackets
         match self.stage:
             case 1:
-                asyncio.sleep(15+(random.uniform(-2,2)))
-                await character.send(player)
+                sleep_time = 15 + (random.uniform(-2, 2))
 
             case 2:
-                asyncio.sleep(13+(random.uniform(-2,1.5)))
-                await character.send(player)
+                sleep_time = 13 + (random.uniform(-2, 1.5))
 
-            case 1:
-                asyncio.sleep(10+(random.uniform(-2,1)))
-                await character.send(player)
+            case 3:
+                sleep_time = 10 + (random.uniform(-2, 1))
+
+        await asyncio.sleep(sleep_time)
+        await character.send(player)
+
 
 Stage = Literal[1, 2, 3]  # Adjustable
