@@ -78,9 +78,11 @@ class Game:
 
             try:
                 await asyncio.gather(*[self.tick(player) for player in players], return_exceptions=True)
-            except Exception:  # noqa: BLE001 this is intentional
+            except Exception as e:  # noqa: BLE001 this is intentional
+                embed = error_embed(title = "Some error has occured",
+                                    description = f"{e} has occured, contact the devs if you see this message")
                 for player in players:
-                    await player.ctx.send(embed=error_embed)
+                    await player.ctx.send(embed=embed)
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
