@@ -4,10 +4,10 @@ import random
 import time
 from typing import TYPE_CHECKING, Annotated
 
-from interactions import SlashContext, Embed
+from interactions import Embed, SlashContext
 
 from src.characters import all_characters
-from src.const import error_color, system_message_color
+from src.const import error_color, system_message_color, AFK_TIME
 from src.player import Player
 from src.templating import total_stages
 
@@ -57,12 +57,12 @@ class Game:
         embed = Embed(title = "We have lost a national leader in the turmoil",
                         description = f"{dead_player.nation_name} has lost their leadership which was done by \n <@{dead_player.id}>",
                         color=system_message_color)
-        
+
         for player in self.players.values():
             await player.ctx.send(embed)
-            
+
         self.remove_player(dead_player.ctx)
-        
+
     def stop(self) -> None:
         """Set the stop flag."""
         self.stop_flag = True
@@ -96,13 +96,17 @@ class Game:
 
                 for player in players:
                     await player.ctx.send(Embed(title = "Some error occured",
-                                                description =f"{e} \n has occured, please contact the devs if you see this",
+                                                description =f"{e} \n has occured, please contact the \
+                                                             devs if you see this",
                                                 color=error_color))
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
         if self.stop_flag:
             return
+
+        if player.current_activity_time - player.last_activity_time > AFK_TIME:
+            self.remove_player(player.ctx)
 
         character = all_characters.get_random(player.state)
         # The sleep times are subject to change, based on how the actual gameplay feels
