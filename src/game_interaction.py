@@ -96,4 +96,4 @@ class GameInteraction(Extension):
                           description=f"<@{ctx.user.id}> has left the game", color=(255, 0, 0))
             await game.remove_player(ctx)
             for player in game.players.values():
-                await player.ctx.send(embed=embed)
+                await player.ctx.send(embed=embed, ephemeral=True)
