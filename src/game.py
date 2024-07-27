@@ -13,6 +13,7 @@ from src.templating import total_stages
 
 if TYPE_CHECKING:
     from src.templating import Stage
+    from src.game_interaction import GameFactory
 
 
 GameID = str
@@ -49,6 +50,7 @@ class Game:
         player_to_delete = ctx.user.id
         try:
             del self.players[player_to_delete]
+            GameFactory.remove_player(player_to_delete)
         except KeyError:
             raise NotImplementedError from KeyError
         # Need to pass this error to the user, that you are in no game
