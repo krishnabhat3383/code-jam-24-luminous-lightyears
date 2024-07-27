@@ -44,7 +44,7 @@ class GameFactory:
 
     def remove_player(self, player_id: int) -> None:
         """Remove a player game mapping."""
-        if player_id in self. players:
+        if player_id in self.players:
             del self.players[player_id]
 
     def remove_game(self, game_id: int) -> None:
@@ -213,6 +213,5 @@ class GameInteraction(Extension):
         player = game.players[ctx.user.id]
         player.state.apply(consequences)
         player.last_activity_time = time.time()
-        print(player.state)
         await ctx.edit_origin(content=f"Your response ({ctx.component.label}) saved.", components=[])
         del game.player_component_choice_mapping[ctx.custom_id]
