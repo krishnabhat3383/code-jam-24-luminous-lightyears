@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import random
-from datetime import datetime, timedelta
+import time
 from typing import TYPE_CHECKING, Annotated
 
 from interactions import SlashContext, Embed
@@ -69,7 +69,7 @@ class Game:
 
     async def loop(self) -> None:
         """Define the main loop of the game."""
-        self.start_time = datetime.now()
+        self.start_time = time.time()
 
         players = self.players.values()
 
@@ -77,7 +77,7 @@ class Game:
             if self.stop_flag:
                 break
 
-            game_time: float = (datetime.now() - self.start_time) / timedelta(minutes=1)
+            game_time: float = (time.time() - self.start_time) / 60
             if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (
                 game_time < self.max_time
             ):
