@@ -205,7 +205,7 @@ class GameInteraction(Extension):
         ctx = event.ctx
         game = self.game_factory.query_game(player_id=ctx.user.id)
 
-        if not game and game.started:
+        if not game:
             await ctx.edit_origin(content="Your game already over.", components=[])
             return
 
