@@ -60,11 +60,13 @@ class ChoiceTemplate(Template):
         """Send UI and apply consequences."""
         buttons: list[Button] = []
 
-        for id, choice in enumerate(self.choices.items()):
+        for _, choice in enumerate(self.choices.items()):
+            button_custom_id = f"{player.ctx.user.id}_{player.get_component_id()}"
+            player.game.player_component_choice_mapping[button_custom_id] = choice[1]
             button = Button(
-                label=f"{next(iter(choice))}",
+                label=f"{choice[0]}",
                 style=ButtonStyle.BLURPLE,
-                custom_id=f"Choice {id}",
+                custom_id=f"{button_custom_id}",
             )
             buttons.append(button)
 

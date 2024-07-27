@@ -31,6 +31,7 @@ class Game:
         self.started: bool = False
         self.creator: int | None = None
         self.stop_flag: bool = False
+        self.player_component_choice_mapping: dict[str, dict] = {}
 
         self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
         # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)

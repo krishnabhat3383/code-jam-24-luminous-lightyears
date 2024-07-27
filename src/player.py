@@ -28,14 +28,21 @@ class PlayerState:
     def apply(self, consequence: dict) -> None:
         """Apply the consequnces to current state."""
         for k, v in consequence.items():
-            self.__dict__[k] += v
+            if attr := getattr(self, k, None):
+                setattr(self, k, attr + v)
 
 
 class Player:
     def __init__(self, ctx: SlashContext, game: "Game") -> None:
         self.ctx = ctx
         self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
-        self.game = game
+        self.game: Game = game
+        self.component_id: int = 0
+
+    def get_component_id(self) -> int:
+        """Return an id to be used in a component like button."""
+        self.component_id += 1
+        return self.component_id
 
     async def register(self) -> None:
         """Ask the player for information."""

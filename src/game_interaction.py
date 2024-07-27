@@ -1,15 +1,10 @@
 import random
+import time
 from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING
 
-from interactions import (
-    Embed,
-    Extension,
-    OptionType,
-    SlashContext,
-    slash_command,
-    slash_option,
-)
+from interactions import Embed, Extension, OptionType, SlashContext, listen, slash_command, slash_option
+from interactions.api.events import Component
 
 from src.game import Game, GameID
 
@@ -202,3 +197,15 @@ class GameInteraction(Extension):
         game.started = True
         await ctx.send(f"<@{ctx.user.id}> Game started", ephemeral=True)
         await game.loop()
+
+    @listen(Component)
+    async def on_component(self, event: Component) -> None:
+        """Listen to button clicks."""
+        ctx = event.ctx
+        game = self.game_factory.query_game(player_id=ctx.user.id)
+        consequences = game.player_component_choice_mapping[ctx.custom_id]
+        player = game.players[ctx.user.id]
+        player.state.apply(consequences)
+        player.last_activity_time = time.time()
+        await ctx.edit_origin(content=f"Your response ({ctx.component.label}) saved.", components=[])
+        del game.player_component_choice_mapping[ctx.custom_id]
