@@ -5,6 +5,7 @@ from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
 from src.weighted_random import WeightedList
+from src.const import message_color
 
 if TYPE_CHECKING:
     from src.player import Player, PlayerState
@@ -38,7 +39,7 @@ class Template:
         return Embed(
             title=f"{actor.name} of {player.state.nation_name}",
             description=self.format(player.state),
-            color=(0, 0, 255),
+            color=message_color
         )
 
     async def ui(self, player: "Player", actor: "Actor") -> None:

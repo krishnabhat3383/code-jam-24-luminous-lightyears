@@ -12,7 +12,7 @@ from interactions import (
 )
 
 from src.game import Game, GameID
-
+from src.const import system_message_color
 if TYPE_CHECKING:
     from interactions import Client
 
@@ -115,7 +115,7 @@ class GameInteraction(Extension):
         embed = Embed(
             title="New game started!",
             description=f"Your invite: {game.id}",
-            color=(255, 0, 0),
+            color=system_message_color
         )
 
         await ctx.send(embed=embed)
@@ -166,7 +166,7 @@ class GameInteraction(Extension):
         embed = Embed(
             title="A Player left the game",
             description=f"<@{ctx.user.id}> has left the game ({len(game.players)} players left).",
-            color=(255, 0, 0),
+            color=system_message_color
         )
         for player in game.players.values():
             await player.ctx.send(embed=embed, ephemeral=True)
