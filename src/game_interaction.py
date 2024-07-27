@@ -1,18 +1,14 @@
 import random
+import time
 from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING
 
-from interactions import (
-    Embed,
-    Extension,
-    OptionType,
-    SlashContext,
-    slash_command,
-    slash_option,
-)
+from interactions import Embed, Extension, OptionType, SlashContext, listen, slash_command, slash_option
+from interactions.api.events import Component
 
-from src.game import Game, GameID
 from src.const import system_message_color
+from src.game import Game, GameID
+
 if TYPE_CHECKING:
     from interactions import Client
 
@@ -37,7 +33,7 @@ class GameFactory:
     def create_game(self, required_no_of_players: int) -> Game:
         """Create a game with the required details."""
         game_id = self.generate_game_id()
-        game = Game(game_id, required_no_of_players)
+        game = Game(game_id, required_no_of_players, self)
         self.games[game_id] = game
 
         return game
@@ -48,7 +44,8 @@ class GameFactory:
 
     def remove_player(self, player_id: int) -> None:
         """Remove a player game mapping."""
-        del self.players[player_id]
+        if player_id in self. players:
+            del self.players[player_id]
 
     def remove_game(self, game_id: int) -> None:
         """Remove a game from game id mapping."""
@@ -115,7 +112,7 @@ class GameInteraction(Extension):
         embed = Embed(
             title="New game started!",
             description=f"Your invite: {game.id}",
-            color=system_message_color
+            color=system_message_color,
         )
 
         await ctx.send(embed=embed)
@@ -160,20 +157,19 @@ class GameInteraction(Extension):
         #     await ctx.send(f"<@{ctx.user.id}> Game creator cannot leave the game", ephemeral=True)  # noqa: ERA001
         #     return  # noqa: ERA001
 
-        self.game_factory.remove_player(ctx.user.id)
         await game.remove_player(ctx)
 
         embed = Embed(
             title="A Player left the game",
             description=f"<@{ctx.user.id}> has left the game ({len(game.players)} players left).",
-            color=system_message_color
+            color=system_message_color,
         )
         for player in game.players.values():
             await player.ctx.send(embed=embed, ephemeral=True)
 
         await ctx.send(embed=embed, ephemeral=True)
 
-        if len(game.players) == 0:
+        if len(game.players) == 0 and game.started:
             await ctx.send("Game Over! You are the only one survivor. Everyone quit!", ephemeral=True)
             game.stop()
             self.game_factory.remove_game(game.id)
@@ -202,3 +198,21 @@ class GameInteraction(Extension):
         game.started = True
         await ctx.send(f"<@{ctx.user.id}> Game started", ephemeral=True)
         await game.loop()
+
+    @listen(Component)
+    async def on_component(self, event: Component) -> None:
+        """Listen to button clicks."""
+        ctx = event.ctx
+        game = self.game_factory.query_game(player_id=ctx.user.id)
+
+        if not game and game.started:
+            await ctx.edit_origin(content="Your game already over.", components=[])
+            return
+
+        consequences = game.player_component_choice_mapping[ctx.custom_id]
+        player = game.players[ctx.user.id]
+        player.state.apply(consequences)
+        player.last_activity_time = time.time()
+        print(player.state)
+        await ctx.edit_origin(content=f"Your response ({ctx.component.label}) saved.", components=[])
+        del game.player_component_choice_mapping[ctx.custom_id]
