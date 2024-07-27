@@ -86,13 +86,13 @@ class Game:
 
         match self.stage:
             case 1:
-                sleep_time = 15 + (random.uniform(-2, 2))
+                sleep_time = 10 + (random.uniform(-2, 2))
 
             case 2:
-                sleep_time = 13 + (random.uniform(-2, 1.5))
+                sleep_time = 8 + (random.uniform(-2, 1.5))
 
             case 3:
-                sleep_time = 10 + (random.uniform(-2, 1))
+                sleep_time = 6 + (random.uniform(-1, 0.75))
 
         await asyncio.sleep(sleep_time)
         await character.send(player)
