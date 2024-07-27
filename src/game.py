@@ -4,15 +4,16 @@ import random
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Annotated
 
-from interactions import SlashContext
+from interactions import SlashContext, Embed
 
 from src.characters import all_characters
-from src.const import error_embed
+from src.const import error_color, system_message_color
 from src.player import Player
 from src.templating import total_stages
 
 if TYPE_CHECKING:
     from src.templating import Stage
+    from src.game_interaction import GameFactory
 
 
 GameID = str
@@ -50,10 +51,21 @@ class Game:
         player_to_delete = ctx.user.id
         try:
             del self.players[player_to_delete]
+            GameFactory.remove_player(player_to_delete)
         except KeyError:
             raise NotImplementedError from KeyError
         # Need to pass this error to the user, that you are in no game
 
+    async def death_player(self, dead_player: Player) -> None:
+        embed = Embed(title = "We have lost a national leader in the turmoil",
+                        description = f"{dead_player.nation_name} has lost their leadership which was done by \n <@{dead_player.id}>",
+                        color=system_message_color)
+        
+        for player in self.players.values():
+            await player.ctx.send(embed)
+            
+        self.remove_player(dead_player.ctx)
+        
     def stop(self) -> None:
         """Set the stop flag."""
         self.stop_flag = True
@@ -82,11 +94,13 @@ class Game:
                 for res in response:
                     if isinstance(res, Exception):
                         logger.error(res)
-            except Exception:
+            except Exception as e:
                 logger.exception("Error occurred in game loop")
 
                 for player in players:
-                    await player.ctx.send(embed=error_embed)
+                    await player.ctx.send(Embed(title = "Some error occured",
+                                                description =f"{e} \n has occured, please contact the devs if you see this",
+                                                color=error_color))
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
@@ -98,17 +112,17 @@ class Game:
         # The randomness gives a variability between the values mentioned in the brackets
         if any(getattr(player.state, attr) < 0 for attr in self.values_to_check):
             # Some value is negative hence need to send the losing message
-            raise NotImplementedError
+            self.death_player(player)
 
         match self.stage:
             case 1:
-                sleep_time = 15 + (random.uniform(-2, 2))
+                sleep_time = 10 + (random.uniform(-2, 2))
 
             case 2:
-                sleep_time = 13 + (random.uniform(-2, 1.5))
+                sleep_time = 8 + (random.uniform(-2, 1.5))
 
             case 3:
-                sleep_time = 10 + (random.uniform(-2, 1))
+                sleep_time = 6 + (random.uniform(-1, 0.75))
 
         await asyncio.sleep(sleep_time)
         await character.send(player)
