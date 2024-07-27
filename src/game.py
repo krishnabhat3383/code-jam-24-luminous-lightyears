@@ -4,10 +4,10 @@ import random
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Annotated
 
-from interactions import SlashContext
+from interactions import SlashContext, Embed
 
 from src.characters import all_characters
-from src.const import error_embed, system_message_embed
+from src.const import error_color, system_message_color
 from src.player import Player
 from src.templating import total_stages
 
@@ -54,8 +54,9 @@ class Game:
         # Need to pass this error to the user, that you are in no game
 
     async def death_player(self, dead_player: Player) -> None:
-        embed = system_message_embed(title = "We have lost a national leader in the turmoil",
-                            description = f"{dead_player.nation_name} has lost their leadership which was done by \n <@{dead_player.id}>")
+        embed = Embed(title = "We have lost a national leader in the turmoil",
+                        description = f"{dead_player.nation_name} has lost their leadership which was done by \n <@{dead_player.id}>",
+                        color=system_message_color)
         
         for player in self.players.values():
             await player.ctx.send(embed)
@@ -94,8 +95,9 @@ class Game:
                 logger.exception("Error occurred in game loop")
 
                 for player in players:
-                    await player.ctx.send(error_embed(title = "Some error occured",
-                                                      description =f"{e} \n has occured, please contact the devs if you see this"))
+                    await player.ctx.send(Embed(title = "Some error occured",
+                                                description =f"{e} \n has occured, please contact the devs if you see this",
+                                                color=error_color))
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""

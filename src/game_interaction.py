@@ -3,6 +3,7 @@ from string import ascii_uppercase, digits
 from typing import TYPE_CHECKING
 
 from interactions import (
+    Embed,
     Extension,
     OptionType,
     SlashContext,
@@ -11,7 +12,7 @@ from interactions import (
 )
 
 from src.game import Game, GameID
-from src.const import system_message_embed
+from src.const import system_message_color
 if TYPE_CHECKING:
     from interactions import Client
 
@@ -111,9 +112,10 @@ class GameInteraction(Extension):
         self.game_factory.add_player(ctx.user.id, game)
         await game.add_player(ctx, cmd="create")
 
-        embed = system_message_embed(
+        embed = Embed(
             title="New game started!",
-            description=f"Your invite: {game.id}"
+            description=f"Your invite: {game.id}",
+            color=system_message_color
         )
 
         await ctx.send(embed=embed)
@@ -161,9 +163,10 @@ class GameInteraction(Extension):
         self.game_factory.remove_player(ctx.user.id)
         await game.remove_player(ctx)
 
-        embed = system_message_embed(
+        embed = Embed(
             title="A Player left the game",
             description=f"<@{ctx.user.id}> has left the game ({len(game.players)} players left).",
+            color=system_message_color
         )
         for player in game.players.values():
             await player.ctx.send(embed=embed, ephemeral=True)
