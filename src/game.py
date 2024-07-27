@@ -1,10 +1,12 @@
 import asyncio
+
+
+from attrs import define
 import random
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Annotated
 
 from interactions import SlashContext
-
 from src.characters import all_characters
 from src.const import error_embed
 from src.player import Player
@@ -12,6 +14,14 @@ from src.templating import total_stages
 
 if TYPE_CHECKING:
     from src.templating import Stage
+
+class Player:
+    """Define and register the data related to the player."""
+
+    def __init__(self, ctx: SlashContext, game: "Game") -> None:
+        self.ctx = ctx
+        self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
+        self.game = game
 
 GameID = str
 
@@ -34,9 +44,20 @@ class Game:
         await player.register()
         self.players[ctx.user.id] = player
 
+
+    async def remove_player(self, ctx: SlashContext) -> None:
+        """Remove player from the game."""
+        player_to_delete = ctx.user.id
+        try:
+            del self.players[player_to_delete]
+        except KeyError:
+            raise NotImplementedError
+        # Need to pass this error to the user, that you are in no game
+
     async def loop(self) -> None:
         """Define the main loop of the game."""
         self.start_time = datetime.now()
+
         players = self.players.values()
 
         while True:
@@ -59,7 +80,6 @@ class Game:
         character = all_characters.get_random(player.state)
         # The sleep times are subject to change, based on how the actual gameplay feels
         # The randomness gives a variability between the values mentioned in the brackets
-
         if any(getattr(player.state, attr) < 0 for attr in self.values_to_check):
             # Some value is negative hence need to send the losing message
             raise NotImplementedError
