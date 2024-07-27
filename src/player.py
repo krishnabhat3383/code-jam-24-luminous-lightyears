@@ -17,7 +17,7 @@ class PlayerState:
     money: float = 100
 
     # How loyal people feel to the current government that you have created
-    loyalty: float = 50
+    loyalty: float = 10
 
     # How vulnerable is the country from external threats
     security: float = 50
@@ -28,8 +28,7 @@ class PlayerState:
     def apply(self, consequence: dict) -> None:
         """Apply the consequnces to current state."""
         for k, v in consequence.items():
-            if attr := getattr(self, k, None):
-                setattr(self, k, attr + v)
+            setattr(self, k, getattr(self, k, None) + v)
 
 
 class Player:

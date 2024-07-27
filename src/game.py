@@ -4,7 +4,7 @@ import random
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Annotated
 
-from interactions import SlashContext, Embed
+from interactions import Embed, SlashContext
 
 from src.characters import all_characters
 from src.const import error_color, system_message_color
@@ -12,8 +12,8 @@ from src.player import Player
 from src.templating import total_stages
 
 if TYPE_CHECKING:
-    from src.templating import Stage
     from src.game_interaction import GameFactory
+    from src.templating import Stage
 
 
 GameID = str
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class Game:
     """Initialize a Game and it's behaviours."""
 
-    def __init__(self, id: GameID, required_no_of_players: int) -> None:
+    def __init__(self, id: GameID, required_no_of_players: int, game_factory: "GameFactory") -> None:
         self.id = id
         self.required_no_of_players: int = required_no_of_players
         self.players: dict[Annotated[int, "discord id"], Player] = {}
@@ -33,6 +33,7 @@ class Game:
         self.creator: int | None = None
         self.stop_flag: bool = False
         self.player_component_choice_mapping: dict[str, dict] = {}
+        self.game_factory: GameFactory = game_factory
 
         self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
         # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
@@ -49,23 +50,27 @@ class Game:
     async def remove_player(self, ctx: SlashContext) -> None:
         """Remove player from the game."""
         player_to_delete = ctx.user.id
-        try:
+        if player_to_delete in self.players:
             del self.players[player_to_delete]
-            GameFactory.remove_player(player_to_delete)
-        except KeyError:
-            raise NotImplementedError from KeyError
-        # Need to pass this error to the user, that you are in no game
+        self.game_factory.remove_player(player_to_delete)
 
     async def death_player(self, dead_player: Player) -> None:
-        embed = Embed(title = "We have lost a national leader in the turmoil",
-                        description = f"{dead_player.nation_name} has lost their leadership which was done by \n <@{dead_player.id}>",
-                        color=system_message_color)
-        
+        """Mark the player as dead."""
+        embed = Embed(
+            title="We have lost a national leader in the turmoil",
+            description=f"{dead_player.state.nation_name} has lost their leadership which was done by \n <@{dead_player.ctx.user.id}>",  # noqa: E501
+            color=system_message_color,
+        )
+
         for player in self.players.values():
-            await player.ctx.send(embed)
-            
-        self.remove_player(dead_player.ctx)
-        
+            await player.ctx.send(embed=embed)
+
+        await self.remove_player(dead_player.ctx)
+
+        if len(self.players) == 0 and self.started:
+            self.stop()
+            self.game_factory.remove_game(self.id)
+
     def stop(self) -> None:
         """Set the stop flag."""
         self.stop_flag = True
@@ -98,9 +103,13 @@ class Game:
                 logger.exception("Error occurred in game loop")
 
                 for player in players:
-                    await player.ctx.send(Embed(title = "Some error occured",
-                                                description =f"{e} \n has occured, please contact the devs if you see this",
-                                                color=error_color))
+                    await player.ctx.send(
+                        Embed(
+                            title="Some error occured",
+                            description=f"{e} \n has occured, please contact the devs if you see this",
+                            color=error_color,
+                        ),
+                    )
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
@@ -110,9 +119,11 @@ class Game:
         character = all_characters.get_random(player.state)
         # The sleep times are subject to change, based on how the actual gameplay feels
         # The randomness gives a variability between the values mentioned in the brackets
-        if any(getattr(player.state, attr) < 0 for attr in self.values_to_check):
-            # Some value is negative hence need to send the losing message
-            self.death_player(player)
+        for attr in self.values_to_check:
+            if getattr(player.state, attr) < 0:
+                # Some value is negative hence need to send the losing message
+                await self.death_player(player)
+                return
 
         match self.stage:
             case 1:

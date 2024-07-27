@@ -39,7 +39,7 @@ class Template:
         return Embed(
             title=f"{actor.name} of {player.state.nation_name}",
             description=self.format(player.state),
-            color=message_color
+            color=message_color,
         )
 
     async def ui(self, player: "Player", actor: "Actor") -> None:
@@ -119,6 +119,7 @@ class Actor:
     weight: int = 100
 
     def is_available(self, state: "PlayerState") -> bool:
+        """Send always available."""
         # Add stuff here if you want to add actors which appear on condition.
         _ = state
         return True
