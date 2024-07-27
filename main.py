@@ -8,14 +8,16 @@ from interactions import (
     listen,
 )
 
-log = logging.getLogger("defcon-internal")
-bot = Client(intents=Intents.DEFAULT, logging_level=logging.WARNING)
+logger = logging.getLogger("defcon-internal")
+logging.basicConfig(level=logging.INFO)
+
+bot = Client(intents=Intents.DEFAULT, logging_level=logging.INFO)
 
 
 @listen()
 async def on_ready() -> None:
     """Notify that the bot is started."""
-    log.info("Bot started.")
+    logger.info("Bot started.")
 
 
 def get_token() -> str:
@@ -31,13 +33,12 @@ def get_token() -> str:
     token = getenv("DEFCON_BOT_TOKEN")
 
     if token is None:
-        log.error("Token not found.\nPlease specify discord bot token via environment variable 'DEFCON_BOT_TOKEN'.")
+        logger.error("Token not found.\nPlease specify discord bot token via environment variable 'DEFCON_BOT_TOKEN'.")
 
         if no_dotenv:
-            log.info("To read token from .env, install 'python-dotenv'")
+            logger.info("To read token from .env, install 'python-dotenv'")
 
         exit()
-
     return token
 
 
