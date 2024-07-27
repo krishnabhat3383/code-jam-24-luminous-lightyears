@@ -90,11 +90,12 @@ class Game:
                 for res in response:
                     if isinstance(res, Exception):
                         logger.error(res)
-            except Exception:
+            except Exception as e:
                 logger.exception("Error occurred in game loop")
 
                 for player in players:
-                    await player.ctx.send(embed=embed)
+                    await player.ctx.send(error_embed(title = "Some error occured",
+                                                      description =f"{e} \n has occured, please contact the devs if you see this"))
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""

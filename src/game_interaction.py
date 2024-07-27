@@ -161,10 +161,9 @@ class GameInteraction(Extension):
         self.game_factory.remove_player(ctx.user.id)
         await game.remove_player(ctx)
 
-        embed = Embed(
+        embed = system_message_embed(
             title="A Player left the game",
             description=f"<@{ctx.user.id}> has left the game ({len(game.players)} players left).",
-            color=(255, 0, 0),
         )
         for player in game.players.values():
             await player.ctx.send(embed=embed, ephemeral=True)
