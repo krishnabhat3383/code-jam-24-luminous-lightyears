@@ -1,14 +1,12 @@
 import asyncio
 
-
-from attrs import define
 import random
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Annotated
 
 from interactions import SlashContext
 from src.characters import all_characters
-from src.const import error_embed
+from src.const import error_embed, system_message_embed
 from src.player import Player
 from src.templating import total_stages
 
@@ -54,6 +52,15 @@ class Game:
             raise NotImplementedError
         # Need to pass this error to the user, that you are in no game
 
+    async def death_player(self, dead_player: Player) -> None:
+        embed = system_message_embed(title = "We have lost a national leader in the turmoil",
+                            description = f"{dead_player.nation_name} has lost their leadership which was done by \n <@{dead_player.id}>")
+        
+        for player in self.players.values():
+            await player.ctx.send(embed)
+            
+        self.remove_player(dead_player.ctx)
+
     async def loop(self) -> None:
         """Define the main loop of the game."""
         self.start_time = datetime.now()
@@ -82,7 +89,7 @@ class Game:
         # The randomness gives a variability between the values mentioned in the brackets
         if any(getattr(player.state, attr) < 0 for attr in self.values_to_check):
             # Some value is negative hence need to send the losing message
-            raise NotImplementedError
+            self.death_player(player)
 
         match self.stage:
             case 1:
