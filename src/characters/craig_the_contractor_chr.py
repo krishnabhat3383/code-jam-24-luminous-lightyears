@@ -15,8 +15,9 @@ character = Actor("Craig the Contractor", "https://i.postimg.cc/fbbR29cS/Craig.w
         ),
         t(
             "The roads are being repaired thanks to the funds provided",
-            choices = {"Take more funds": {"money": -10,  "loyalty" : +10},
-                       "Great": {"world_opinion" : +10},
+            choices = {
+                "Take more funds": {"money": -10,  "loyalty" : +10},
+                "Great": {"world_opinion" : +10},
             },
         ),
         t(
