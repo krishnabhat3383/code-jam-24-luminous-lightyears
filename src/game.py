@@ -30,8 +30,7 @@ class Game:
         self.required_no_of_players: int = required_no_of_players
         self.players: dict[Annotated[int, "discord id"], Player] = {}
         self.stage: Stage = 1
-        # self.max_time: float = random.uniform(12.5, 16)
-        self.max_time: float = random.uniform(2, 4)
+        self.max_time: float = random.uniform(12.5, 16)
         self.started: bool = False
         self.creator_id: int | None = None
         self.stop_flag: bool = False
@@ -69,7 +68,7 @@ class Game:
         )
 
         for player in self.players.values():
-            await player.ctx.send(embed=embed)
+            await player.ctx.send(embed=embed, ephemeral=True)
 
         await self.remove_player(dead_player.ctx)
 
@@ -77,13 +76,26 @@ class Game:
             self.stop()
             self.game_factory.remove_game(self.id)
 
+    async def stop_game_by_time(self) -> None:
+        """End game because the time is up."""
+        embed = Embed(
+            title="Time Up! Game Over!",
+            description=f"Game is over! Because time is up! We have {len(self.players)} survivors! You are one of them!",  # noqa: E501
+            color=system_message_color,
+        )
+
+        for player in list(self.players.values()):
+            await player.ctx.send(embed=embed, ephemeral=True)
+            await self.remove_player(player.ctx)
+
+        self.game_factory.remove_game(self.id)
+
     def stop(self) -> None:
         """Set the stop flag."""
         self.stop_flag = True
 
     async def loop(self) -> None:
         """Define the main loop of the game."""
-        # self.start_time = datetime.now(UTC)
         self.start_time = time.time()
 
         players = self.players.values()
@@ -92,13 +104,18 @@ class Game:
             if self.stop_flag:
                 break
 
-            # game_time: float = (datetime.now(UTC) - self.start_time) / timedelta(minutes=1)
             game_time: float = (time.time() - self.start_time) / 60
 
             if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (
                 game_time < self.max_time
             ):
                 self.stage = total_stages[total_stages.index(self.stage) + 1]
+
+            if game_time >= self.max_time:
+                logger.info(f"Time is Up! Game {self.id} is over!")
+                self.stop()
+                await self.stop_game_by_time()
+                break
 
             logger.info(f"{game_time=} {self.stage=} {self.max_time=}")
 
@@ -125,7 +142,6 @@ class Game:
         if self.stop_flag:
             return
 
-        character = all_characters.get_random(player.state)
         for attr in self.values_to_check:
             if getattr(player.state, attr) < 0:
                 # Some value is negative hence need to send the losing message
@@ -144,5 +160,13 @@ class Game:
             case 3:
                 sleep_time = 6 + (random.uniform(-1, 0.75))
 
-        await asyncio.sleep(sleep_time)
-        await character.send(player)
+        character = all_characters.get_random(player.state)
+        while self.stage not in character.stages:
+            character = all_characters.get_random(player.state)
+
+        result = await character.send(player)
+
+        if result:
+            await asyncio.sleep(sleep_time)
+        else:
+            await asyncio.sleep(0.2)

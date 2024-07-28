@@ -1,4 +1,5 @@
-import typing
+"""Import and store all the characters and templates for use."""
+
 from importlib import import_module
 from logging import getLogger
 from pathlib import Path
