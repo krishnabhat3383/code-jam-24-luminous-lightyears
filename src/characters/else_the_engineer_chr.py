@@ -48,4 +48,4 @@ character = Actor("Elsa the Engineer", "https://i.postimg.cc/kGWJ6Fmz/elsa.webp"
             condition = lambda state: state.security>50 and state.money>500,
         ),
     ]),
-])
+], weight=60)

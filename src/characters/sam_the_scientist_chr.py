@@ -130,4 +130,4 @@ character = Actor("Sam the Scientist", "https://i.postimg.cc/xTSTr7G2/sam.webp",
             weight=150,
         ),
     ]),
-])
+], weight=120)

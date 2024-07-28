@@ -80,4 +80,4 @@ character = Actor("Craig the Contractor", "https://i.postimg.cc/fbbR29cS/Craig.w
             condition=lambda state: state.money > 100,
         ),
     ]),
-])
+], weight=70)

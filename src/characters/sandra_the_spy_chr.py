@@ -189,4 +189,4 @@ character = Actor("Sandra the Spy", "https://i.postimg.cc/MKbZzDtj/sandra.webp",
             },
         ),
     ]),
-])
+], weight=90)
