@@ -76,6 +76,22 @@ class Game:
             self.stop()
             self.game_factory.remove_game(self.id)
 
+    async def disqualify_player(self, player: Player) -> None:
+        """Disqualify inactive player."""
+        embed = Embed(
+            title="We have lost a national leader due to inactivity.",
+            description=f"{player.state.nation_name} has lost their leadership which was done by \n <@{player.ctx.user.id}>",  # noqa: E501
+            color=system_message_color,
+        )
+        for _player in self.players.values():
+            await _player.ctx.send(embed=embed, ephemeral=True)
+
+        await self.remove_player(player.ctx)
+
+        if len(self.players) == 0 and self.started:
+            self.stop()
+            self.game_factory.remove_game(self.id)
+
     async def stop_game_by_time(self) -> None:
         """End game because the time is up."""
         embed = Embed(
@@ -101,11 +117,6 @@ class Game:
 
         while True:
             logger.info(f"{len(self.players)} left in game {self.id}")
-
-            if len(self.players) == 0 and self.started:
-                self.stop()
-                self.game_factory.remove_game(self.id)
-                break
 
             if self.game_stop_flag:
                 break
@@ -148,8 +159,7 @@ class Game:
             return
 
         if (time.time() - player.last_activity_time) > AFK_TIME:
-            await player.ctx.send(content="AFK detected. You are disqualified. Sorry!")
-            await self.remove_player(player.ctx)
+            await self.disqualify_player(player)
             return
 
         character = all_characters.get_random(player.state)
