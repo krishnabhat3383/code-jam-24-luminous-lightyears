@@ -85,8 +85,8 @@ class GameInteraction(Extension):
                     title="A player joined the game",
                     description=f"<@{ctx.user.id}> joined the game.\n{count_message}",
                     color=system_message_color,
-                    ephemeral=True,
                 ),
+                ephemeral=True,
             )
 
     @slash_command(name="defcord", description="Interact with defcord.")
@@ -110,8 +110,8 @@ class GameInteraction(Extension):
                 Embed(
                     title="You have already joined a game",
                     description=f"<@{ctx.user.id}> You are already part of the game with invite {existing_game.id}",
-                    ephemeral=True,
                 ),
+            ephemeral=True,
             )
             return
 
@@ -150,8 +150,8 @@ class GameInteraction(Extension):
                     title="Unable to join the game",
                     description=description,
                     color=system_message_color,
-                    ephemeral=True,
                 ),
+                ephemeral=True,
             )
             return
 
@@ -170,8 +170,8 @@ class GameInteraction(Extension):
                     title="You cannot leave any game since",
                     description=f"<@{ctx.user.id}> You are not part of any game",
                     color=system_message_color,
-                    ephemeral=True,
                 ),
+                ephemeral=True,
             )
             return
 
@@ -193,8 +193,8 @@ class GameInteraction(Extension):
                     title="Game Over",
                     description="Game Over! You are the only one survivor. Everyone quit!",
                     color=system_message_color,
-                    ephemeral=True,
                 ),
+                ephemeral=True,
             )
             game.stop()
             self.game_factory.remove_game(game.id)
@@ -220,8 +220,8 @@ class GameInteraction(Extension):
                     title="Unable to start the game",
                     description=description,
                     color=system_message_color,
-                    ephemeral=True,
                 ),
+                ephemeral=True,
             )
             return
 
@@ -231,8 +231,8 @@ class GameInteraction(Extension):
                 title="Game Start",
                 description=f"<@{ctx.user.id}> Game started",
                 color=system_message_color,
-                ephemeral=True,
             ),
+            ephemeral=True,
         )
 
         for player in game.players.values():
