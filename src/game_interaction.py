@@ -110,6 +110,7 @@ class GameInteraction(Extension):
                 Embed(
                     title="You have already joined a game",
                     description=f"<@{ctx.user.id}> You are already part of the game with invite {existing_game.id}",
+                    color=system_message_color,
                 ),
             ephemeral=True,
             )
