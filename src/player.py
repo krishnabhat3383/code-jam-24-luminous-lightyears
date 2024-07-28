@@ -37,7 +37,6 @@ class Player:
         self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
         self.game: Game= game
         self.last_activity_time: float = 0
-        self.current_activity_time: float = 0
         self.component_id: int = 0
 
     def get_component_id(self) -> int:
