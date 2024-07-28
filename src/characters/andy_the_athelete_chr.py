@@ -94,4 +94,4 @@ character = Actor("Andy the Athlete", "https://i.postimg.cc/50h92KZ8/Andy.webp",
             condition=lambda state: state.money > 200,
         ),
     ]),
-])
+], weight=80)

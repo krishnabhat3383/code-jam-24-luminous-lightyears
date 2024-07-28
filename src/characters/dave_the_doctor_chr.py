@@ -91,4 +91,4 @@ character = Actor("Dave the Doctor", "https://i.postimg.cc/Y9GqkByp/Dave.webp",[
             condition=lambda state: state.loyalty > 50,
         ),
     ]),
-])
+], weight=110)

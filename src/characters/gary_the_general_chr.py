@@ -125,4 +125,4 @@ character = Actor("Gary the General", "https://i.postimg.cc/c134bZnh/gary.webp",
             weight=150,
         ),
     ]),
-])
+], weight=130)

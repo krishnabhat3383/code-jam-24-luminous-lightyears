@@ -99,4 +99,4 @@ character = Actor("Fred the Farmer", "https://i.postimg.cc/ZKcmGqK8/Fred.webp",[
             condition=lambda state: state.loyalty > 50,
         ),
     ]),
-])
+], weight=120)

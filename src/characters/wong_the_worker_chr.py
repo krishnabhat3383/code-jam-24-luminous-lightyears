@@ -106,4 +106,4 @@ character = Actor("Wong the Worker", "https://i.postimg.cc/ht2SdtkD/wong.webp",[
             },
         ),
     ]),
-])
+], weight=110)

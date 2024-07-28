@@ -73,4 +73,4 @@ character = Actor("Aura the Activist", "https://i.postimg.cc/qvw7xL3d/aura.jpg",
             condition=lambda state: state.security > 50,
         ),
     ]),
-])
+], weight=90)

@@ -4,7 +4,7 @@ from src.templating import Actor, StageGroup
 from src.templating import ChoiceTemplate as t  # noqa: N813
 
 # fmt: off
-character = Actor("Social Media", "url_here", [
+character = Actor("National Media", "url_here", [
     StageGroup(1, [
         t(
             "Trending Now: A rumor is spreading that neighboring nations are stockpiling weapons. Should we respond?",
