@@ -1,7 +1,7 @@
 from src.templating import Actor, StageGroup
 from src.templating import ChoiceTemplate as t
 
-Actor("Sheela the Singer", "url_here",[
+character = Actor("Sheela the Singer", "url_here",[
     StageGroup(1, [
         t(
             "Blessed leader of {nation_name}, please fund my public concert!",

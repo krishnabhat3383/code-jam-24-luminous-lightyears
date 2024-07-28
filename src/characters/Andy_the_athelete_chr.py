@@ -1,12 +1,12 @@
 from src.templating import Actor, StageGroup
 from src.templating import ChoiceTemplate as t
 
-Actor("Andy the Athlete", "url_here",[
+character = Actor("Andy the Athlete", "url_here",[
     StageGroup(1, [
         t(
             "Dear leader of {nation_name}, please help our climate change marathon's fundraiser.",
             choices={
-                "Sure": {"money": -10, "loyalty": +5},
+                "Sure": {"money": -10, "loyalty": +5, "world_opinion" : +10},
                 "Nope": {"loyalty": -5},
             },
         ),

@@ -4,7 +4,7 @@ from src.templating import ChoiceTemplate as t
 # fmt: off
 
 # fmt: off
-Actor("Fred the Farmer", "url_here",[
+character = Actor("Fred the Farmer", "url_here",[
     StageGroup(1, [
         t(
             "Hello, leader of {nation_name}. Can you spare some money for our new farming equipment?",
