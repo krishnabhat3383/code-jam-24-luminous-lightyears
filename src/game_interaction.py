@@ -106,7 +106,7 @@ class GameInteraction(Extension):
         existing_game = self.game_factory.query_game(player_id=ctx.user.id)
         if existing_game:
             await ctx.send(
-                Embed(
+                embed=Embed(
                     title="You have already joined a game",
                     description=f"<@{ctx.user.id}> You are already part of the game with invite {existing_game.id}",
                     color=system_message_color,
@@ -146,7 +146,7 @@ class GameInteraction(Extension):
 
         if description != "":
             await ctx.send(
-                Embed(
+                embed=Embed(
                     title="Unable to join the game",
                     description=description,
                     color=system_message_color,
@@ -166,7 +166,7 @@ class GameInteraction(Extension):
 
         if game is None:
             await ctx.send(
-                Embed(
+                embed=Embed(
                     title="You cannot leave any game since",
                     description=f"<@{ctx.user.id}> You are not part of any game",
                     color=system_message_color,
@@ -189,7 +189,7 @@ class GameInteraction(Extension):
 
         if len(game.players) == 0 and game.started:
             await ctx.send(
-                Embed(
+                embed=Embed(
                     title="Game Over",
                     description="Game Over! You are the only one survivor. Everyone quit!",
                     color=system_message_color,
@@ -216,7 +216,7 @@ class GameInteraction(Extension):
 
         if description != "":
             ctx.send(
-                Embed(
+                embed=Embed(
                     title="Unable to start the game",
                     description=description,
                     color=system_message_color,
@@ -227,7 +227,7 @@ class GameInteraction(Extension):
 
         game.started = True
         await ctx.send(
-            Embed(
+            embed=Embed(
                 title="Game Start",
                 description=f"<@{ctx.user.id}> Game started",
                 color=system_message_color,

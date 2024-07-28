@@ -165,7 +165,7 @@ class Game:
 
                 for player in players:
                     await player.ctx.send(
-                        Embed(
+                        embed=Embed(
                             title="Some error occured",
                             description=f"{e} \n has occured, please contact the devs if you see this",
                             color=error_color,
