@@ -4,7 +4,7 @@ from src.templating import Actor, StageGroup
 from src.templating import ChoiceTemplate as t  # noqa: N813
 
 # fmt: off
-character = Actor("Sandra the Spy", "url_here",[
+character = Actor("Sandra the Spy", "https://i.postimg.cc/MKbZzDtj/sandra.webp",[
     StageGroup(1, [
         t(
             "Leader of {nation_name}, we need additional funds to enhance our espionage network.",

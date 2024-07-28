@@ -4,7 +4,7 @@ from src.templating import Actor, StageGroup
 from src.templating import ChoiceTemplate as t  # noqa: N813
 
 # fmt: off
-character = Actor("Sam the Scientist", "url_here",[
+character = Actor("Sam the Scientist", "https://i.postimg.cc/xTSTr7G2/sam.webp",[
     StageGroup(1, [
         t(
             "Greetings, esteemed leader of {nation_name}. May I request your consideration for a financial contribution towards our research?",  # noqa: E501
