@@ -36,10 +36,8 @@ class Player:
         self.ctx: SlashContext = ctx
         self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
         self.game: Game= game
-        self.last_activity_time: float = time.time()
+        self.last_activity_time: float = 0
         self.current_activity_time: float = 0
-
-        # self.last_activity_time: float = time.time()
         self.component_id: int = 0
 
     def get_component_id(self) -> int:

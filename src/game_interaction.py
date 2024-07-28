@@ -197,6 +197,10 @@ class GameInteraction(Extension):
 
         game.started = True
         await ctx.send(f"<@{ctx.user.id}> Game started", ephemeral=True)
+        
+        for player in game.players.values():
+            player.last_activity_time = time.time()
+
         await game.loop()
 
     @listen(Component)
@@ -212,7 +216,7 @@ class GameInteraction(Extension):
         consequences = game.player_component_choice_mapping[ctx.custom_id]
         player = game.players[ctx.user.id]
         player.state.apply(consequences)
-        player.last_activity_time = time.time()
+        player.last_activity_time = player.current_activity_time
         print(player.state)
         await ctx.edit_origin(content=f"Your response ({ctx.component.label}) saved.", components=[])
         del game.player_component_choice_mapping[ctx.custom_id]
