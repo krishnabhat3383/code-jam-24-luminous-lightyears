@@ -82,11 +82,12 @@ class GameInteraction(Extension):
 
             await player.ctx.send(
                 Embed(
-                        title ="A player joined the game",
-                        description=f"<@{ctx.user.id}> joined the game.\n{count_message}",
-                        color=system_message_color,
-                        ephemeral=True,
-                    ))
+                    title="A player joined the game",
+                    description=f"<@{ctx.user.id}> joined the game.\n{count_message}",
+                    color=system_message_color,
+                    ephemeral=True,
+                ),
+            )
 
     @slash_command(name="defcord", description="Interact with defcord.")
     async def defcord(self, ctx: SlashContext) -> None:
@@ -107,10 +108,11 @@ class GameInteraction(Extension):
         if existing_game:
             await ctx.send(
                 Embed(
-                title="You have already joined a game",
-                description=f"<@{ctx.user.id}> You are already part of the game with invite {existing_game.id}",
-                ephemeral=True,
-            ))
+                    title="You have already joined a game",
+                    description=f"<@{ctx.user.id}> You are already part of the game with invite {existing_game.id}",
+                    ephemeral=True,
+                ),
+            )
             return
 
         game = self.game_factory.create_game(required_no_of_players)
@@ -130,30 +132,29 @@ class GameInteraction(Extension):
     @slash_option("invite", "The invite code for the game", required=True, opt_type=OptionType.STRING)
     async def join(self, ctx: SlashContext, invite: str) -> None:
         """Join a game of DEFCORD."""
-        game : Game = self.game_factory.query_game(game_id=invite)
-        description : str = ""
+        game: Game = self.game_factory.query_game(game_id=invite)
+        description: str = ""
+
         if game is None:
             description = f"<@{ctx.user.id}> Invite({invite}) is invalid"
-
         elif ctx.user.id in game.players:
             description = f"<@{ctx.user.id}> You are already part of the game with {invite=}"
-
         elif game.required_no_of_players == len(game.players):
             description = f"<@{ctx.user.id}> Game is already full {invite=}"
-
         elif game.started:
             description = f"<@{ctx.user.id}> Game already started"
 
-        
         if description != "":
-            await ctx.send(Embed(
-                title = "Unable to join the game",
-                description=description,
-                color = system_message_color,
-                ephemeral = True
-            ))
+            await ctx.send(
+                Embed(
+                    title="Unable to join the game",
+                    description=description,
+                    color=system_message_color,
+                    ephemeral=True,
+                ),
+            )
             return
-        
+
         self.game_factory.add_player(ctx.user.id, game)
         await game.add_player(ctx, cmd="join")
         await self.send_player_join_notification(game, ctx)
@@ -166,10 +167,11 @@ class GameInteraction(Extension):
         if game is None:
             await ctx.send(
                 Embed(
-                title="You cannot leave any game since",
-                description=f"<@{ctx.user.id}> You are not part of any game", 
-                color=system_message_color,
-                ephemeral=True)
+                    title="You cannot leave any game since",
+                    description=f"<@{ctx.user.id}> You are not part of any game",
+                    color=system_message_color,
+                    ephemeral=True,
+                ),
             )
             return
 
@@ -188,10 +190,11 @@ class GameInteraction(Extension):
         if len(game.players) == 0 and game.started:
             await ctx.send(
                 Embed(
-                title = "Game Over",
-                description="Game Over! You are the only one survivor. Everyone quit!",
-                color = system_message_color,
-                ephemeral=True)
+                    title="Game Over",
+                    description="Game Over! You are the only one survivor. Everyone quit!",
+                    color=system_message_color,
+                    ephemeral=True,
+                ),
             )
             game.stop()
             self.game_factory.remove_game(game.id)
@@ -200,35 +203,37 @@ class GameInteraction(Extension):
     async def start(self, ctx: SlashContext) -> None:
         """Start and runs the Defcord game loop."""
         game = self.game_factory.query_game(player_id=ctx.user.id)
-        description : str = ""
+        description: str = ""
+
         if game is None:
             description = f"<@{ctx.user.id}> You are not part of any game"
-
         elif game.creator_id != ctx.user.id:
             description = f"<@{ctx.user.id}> Only game creator can start it"
-
         elif game.started:
             description = f"<@{ctx.user.id}> Game already started"
-
         elif game.required_no_of_players != len(game.players):
             description = f"<@{ctx.user.id}> Cannot start the game until all the players join"
 
         if description != "":
-            ctx.send(Embed(
-                title = "Unable to start the game",
-                description = description,
-                color=system_message_color,
-                ephemeral = True
-            ))
-            return 
-        
+            ctx.send(
+                Embed(
+                    title="Unable to start the game",
+                    description=description,
+                    color=system_message_color,
+                    ephemeral=True,
+                ),
+            )
+            return
+
         game.started = True
-        await ctx.send(Embed(
-            title = "Game Start",
-            description = f"<@{ctx.user.id}> Game started",
-            color = system_message_color,
-            ephemeral=True
-            ))
+        await ctx.send(
+            Embed(
+                title="Game Start",
+                description=f"<@{ctx.user.id}> Game started",
+                color=system_message_color,
+                ephemeral=True,
+            ),
+        )
 
         for player in game.players.values():
             player.last_activity_time = time.time()
