@@ -34,7 +34,7 @@ class Game:
         self.max_time: float = random.uniform(12.5, 16)
         self.started: bool = False
         self.creator_id: int | None = None
-        self.stop_flag: bool = False
+        self.game_stop_flag: bool = False
         self.player_component_choice_mapping: dict[str, dict] = {}
         self.game_factory: GameFactory = game_factory
         self.values_to_check: list[str] = ["loyalty", "money", "security", "world_opinion"]
@@ -93,7 +93,7 @@ class Game:
 
     def stop(self) -> None:
         """Set the stop flag."""
-        self.stop_flag = True
+        self.game_stop_flag = True
 
     async def loop(self) -> None:
         """Define the main loop of the game."""
@@ -102,7 +102,7 @@ class Game:
         players = self.players.values()
 
         while True:
-            if self.stop_flag:
+            if self.game_stop_flag:
                 break
 
             game_time: float = (time.time() - self.start_time) / 60
@@ -139,15 +139,17 @@ class Game:
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
-        if self.stop_flag:
+        if self.game_stop_flag:
             return
 
-        if player.current_activity_time - player.last_activity_time > AFK_TIME:
-            self.remove_player(player.ctx)
+        print(player.last_activity_time, time.time())
+        print(player.last_activity_time - time.time())
+
+
+        if time.time() - player.last_activity_time > AFK_TIME:
+            await self.remove_player(player.ctx)
 
         character = all_characters.get_random(player.state)
-        # The sleep times are subject to change, based on how the actual gameplay feels
-        # The randomness gives a variability between the values mentioned in the brackets
         for attr in self.values_to_check:
             if getattr(player.state, attr) < 0:
                 # Some value is negative hence need to send the losing message
