@@ -9,45 +9,41 @@ from src.templating import ChoiceTemplate as t  # noqa: N813
 character = Actor("Fred the Farmer", "url_here",[
     StageGroup(1, [
         t(
-            "Hello, leader of {nation_name}. Can you spare some money for our new farming equipment?",
+            "Hello, leader of {nation_name}. We request you to give subsidies for seeds",
             choices={
                 "Sure": {"money": -10, "loyalty": +5},
                 "Nope": {"loyalty": -5},
             },
         ),
         t(
-            "Things are great, we managed to grow even more crops than expected.\
-                Thank you for your help, leader! \n Here, have this small gift from our community",
-            choices = {"Thanks!": {"money": +15}},
-            condition = lambda state: state.loyalty>70 and state.money<300,
+            "Thank you for your help, leader!",
+            choices = {"It's my duty": {"money": +15}},
+            condition = lambda state: state.loyalty>50,
         ),
     ]),
     StageGroup(2, [
-        t("Hello, leader of {nation_name}. Can you spare some money for our new farming equipment?",
+        t("Hello, leader of {nation_name}. Can you raise the Minimum Support Price for crops",
                  choices = {
-                     "Sure": {"money": -20, "loyalty": +5},
-                     "Nope": {"loyalty": -5},
+                     "Sure": {"money": -20, "loyalty": +15},
+                     "Nope": {"loyalty": -10},
                  },
             ),
         t(
-            "Things are great, we managed to grow even more crops than expected.\
-                Thank you for your help, leader! \n Here, have this small gift from our community",
-            choices = {"Thanks!": {"money": +30}},
-            condition = lambda state: state.loyalty>90 and state.money<600,
+            "Our votes will stay with you",
+            choices = {"Thanks!": {"loyalty": +20}},
+            condition = lambda state: state.loyalty>70,
         ),
     ]),
     StageGroup(3, [
-        t("Hello, leader of {nation_name}. Can you spare some money for our new farming equipment?",
+        t("Hello, leader of {nation_name}. Can you give subsidies for farming equipment?",
                  choices = {
-                     "Sure": {"money": -40, "loyalty": +5},
+                     "Sure": {"money": -20, "loyalty": +15},
                      "Nope": {"loyalty": -5},
                  },
             ),
         t(
-            "Things are great, we managed to grow even more crops than expected.\
-                Thank you for your help, leader! \n Here, have this small gift from our community",
-            choices = {"Thanks!": {"money": +60}},
-            condition = lambda state: state.loyalty>110 and state.money<1200,
+            "We are able to do our work more effectively now",
+            choices = {"Great!": {"money": +20}},
         ),
     ]),  
 ])

@@ -4,42 +4,45 @@ from src.templating import ChoiceTemplate as t
 character = Actor("Elsa the Engineer", "url_here",[
     StageGroup(1, [
         t(
-            "Ruler of {nation_name}, spare some money to design the army's vests!",
+            "Leader of {nation_name},it is my humble request allocate more budget towards research for\
+                technology used in military field",
             choices={
-                "Sure": {"money": -10, "loyalty": +5},
-                "Nope": {"loyalty": -5},
+                "Sure": {"money": -30, "loyalty": +5,  "security" : +15},
+                "Nope": {"loyalty": -5, "world_opinion" : -10},
             },
         ),
         t(
-            "The vests are bulletproof! Thanks.",
-            choices = {"Great!": {"money": +15}},
-            condition = lambda state: state.loyalty>70 and state.money<300,
+            "We are competiting the cutting edge military tech now.",
+            choices = {"Great!": {"security": +10}},
+            condition = lambda state: state.security<50,
         ),
     ]),
     StageGroup(2, [
-        t("Ruler of {nation_name}, spare some money to design the army's equipment!",
+        t("Leader of {nation_name}, it is my humble request allocate some of the budget\
+           in the manufacturing sector",
                  choices = {
-                     "Sure": {"money": -20, "loyalty": +5},
-                     "Nope": {"loyalty": -5},
+                     "Sure": {"money": -20, "loyalty": +5, "world_opinion" : +10},
+                     "Nope": {"loyalty": -5, "money" : -10},
                  },
             ),
         t(
-            "The equipment is top-notch. Thanks.",
+            "Now we won't be requiring to be import certain important materials.",
             choices = {"Great!": {"money": +30}},
-            condition = lambda state: state.loyalty>90 and state.money<600,
+            condition = lambda state: state.loyalty>40 and state.money>500,
         ),
     ]),
     StageGroup(3, [
-        t("Ruler of {nation_name}, spare some money to design the army's weapons!",
+        t("Leader of {nation_name}, it is my humble request to give subsidies for \
+          research companies in our nation",
                  choices = {
-                     "Sure": {"money": -40, "loyalty": +5},
-                     "Nope": {"loyalty": -5},
+                     "Sure": {"money": -30, "loyalty": +5 , "world_opinion" : +10},
+                     "Nope": {"loyalty": -5 , "world_opinion" : -10},
                  },
             ),
         t(
-            "The weapons are deadly! Thanks.",
-            choices = {"Great!": {"money": +60}},
-            condition = lambda state: state.loyalty>110 and state.money<1200,
+            "Now the nation would be filing more patents.",
+            choices = {"Great!": {"money": +50}},
+            condition = lambda state: state.security>50 and state.money>500,
         ),
     ]),
 ])
