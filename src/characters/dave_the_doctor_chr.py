@@ -14,9 +14,11 @@ character = Actor("Dave the Doctor", "https://i.postimg.cc/Y9GqkByp/Dave.webp",[
             },
         ),
         t(
-            "We have manufactured the vaccines, but lack the funding to distribute, we require your assistance\
-                on this",
-            choices = {"Sure": {"money": -15, "Nope":{ "world_opinion" : -20,  "security" : -10,  "loyalty" : -10}}},
+            "We have manufactured the vaccines, but lack the funding to distribute, we require your assistance on this",  # noqa: E501
+            choices = {
+                "Sure": {"money": -15},
+                "Nope":{ "world_opinion" : -20,  "security" : -10,  "loyalty" : -10},
+            },
         ),
         t(
             "Leader of {nation_name}, our hospital is overwhelmed with patients. We need additional funding to hire more staff.",  # noqa: E501
