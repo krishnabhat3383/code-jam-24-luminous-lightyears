@@ -1,1 +1,2 @@
 discord-py-interactions~=5.13.0
+python-dotenv~=1.0.1

@@ -79,9 +79,8 @@ class GameInteraction(Extension):
                 count_message = f"{remaining_players_count} yet to join."
             else:
                 count_message = "All aboard. The game creator can start the game now."
-
             await player.ctx.send(
-                Embed(
+                embed=Embed(
                     title="A player joined the game",
                     description=f"<@{ctx.user.id}> joined the game.\n{count_message}",
                     color=system_message_color,
@@ -112,7 +111,7 @@ class GameInteraction(Extension):
                     description=f"<@{ctx.user.id}> You are already part of the game with invite {existing_game.id}",
                     color=system_message_color,
                 ),
-            ephemeral=True,
+                ephemeral=True,
             )
             return
 
