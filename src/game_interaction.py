@@ -1,3 +1,5 @@
+"""Module responsible for game interaction with discord."""
+
 import random
 import time
 from string import ascii_uppercase, digits
@@ -153,7 +155,7 @@ class GameInteraction(Extension):
             await ctx.send(f"<@{ctx.user.id}> You are not part of any game", ephemeral=True)
             return
 
-        # if game.creator == ctx.user.id: # TODO: check this validity - needed of not
+        # if game.creator_id == ctx.user.id: # TODO: check this validity - needed of not
         #     await ctx.send(f"<@{ctx.user.id}> Game creator cannot leave the game", ephemeral=True)  # noqa: ERA001
         #     return  # noqa: ERA001
 
@@ -183,7 +185,7 @@ class GameInteraction(Extension):
             await ctx.send(f"<@{ctx.user.id}> You are not part of any game", ephemeral=True)
             return
 
-        if game.creator != ctx.user.id:
+        if game.creator_id != ctx.user.id:
             await ctx.send(f"<@{ctx.user.id}> Only game creator can start it", ephemeral=True)
             return
 
