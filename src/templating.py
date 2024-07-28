@@ -1,6 +1,7 @@
 """Utils for creating and using templates."""
 
 import logging
+import os
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Literal, get_args
 
@@ -46,7 +47,7 @@ class Template:
             title=f"{actor.name} of {player.state.nation_name}",
             description=self.format(player.state),
             color=message_color,
-            thumbnail=actor.picture
+            thumbnail=None if os.environ.get("WITHOUT_ACTOR_THUMBNAIL") else actor.picture,
         )
 
     async def ui(self, player: "Player", actor: "Actor") -> None:
