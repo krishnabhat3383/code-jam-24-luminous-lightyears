@@ -51,7 +51,8 @@ class GameFactory:
 
     def remove_game(self, game_id: int) -> None:
         """Remove a game from game id mapping."""
-        del self.games[game_id]
+        if game_id in self.games:
+            del self.games[game_id]
 
     def query_game(self, game_id: GameID | None = None, player_id: int | None = None) -> Game | None:
         """Return the game based on the query details."""
@@ -155,10 +156,6 @@ class GameInteraction(Extension):
             await ctx.send(f"<@{ctx.user.id}> You are not part of any game", ephemeral=True)
             return
 
-        # if game.creator_id == ctx.user.id: # TODO: check this validity - needed of not
-        #     await ctx.send(f"<@{ctx.user.id}> Game creator cannot leave the game", ephemeral=True)  # noqa: ERA001
-        #     return  # noqa: ERA001
-
         await game.remove_player(ctx)
 
         embed = Embed(
@@ -199,7 +196,7 @@ class GameInteraction(Extension):
 
         game.started = True
         await ctx.send(f"<@{ctx.user.id}> Game started", ephemeral=True)
-        
+
         for player in game.players.values():
             player.last_activity_time = time.time()
 

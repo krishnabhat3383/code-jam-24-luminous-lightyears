@@ -7,10 +7,9 @@ import time
 from typing import TYPE_CHECKING, Annotated
 
 from interactions import Embed, SlashContext
-from interactions import Embed, SlashContext
 
 from src.characters import all_characters
-from src.const import error_color, system_message_color, AFK_TIME
+from src.const import AFK_TIME, error_color, system_message_color
 from src.player import Player
 from src.templating import total_stages
 
@@ -98,10 +97,16 @@ class Game:
     async def loop(self) -> None:
         """Define the main loop of the game."""
         self.start_time = time.time()
-
         players = self.players.values()
 
         while True:
+            logger.info(f"{len(self.players)} left in game {self.id}")
+
+            if len(self.players) == 0 and self.started:
+                self.stop()
+                self.game_factory.remove_game(self.id)
+                break
+
             if self.game_stop_flag:
                 break
 
@@ -142,12 +147,10 @@ class Game:
         if self.game_stop_flag:
             return
 
-        print(player.last_activity_time, time.time())
-        print(player.last_activity_time - time.time())
-
-
-        if time.time() - player.last_activity_time > AFK_TIME:
+        if (time.time() - player.last_activity_time) > AFK_TIME:
+            await player.ctx.send(content="AFK detected. You are disqualified. Sorry!")
             await self.remove_player(player.ctx)
+            return
 
         character = all_characters.get_random(player.state)
         for attr in self.values_to_check:
@@ -161,10 +164,8 @@ class Game:
         match self.stage:
             case 1:
                 sleep_time = 10 + (random.uniform(-2, 2))
-
             case 2:
                 sleep_time = 8 + (random.uniform(-2, 1.5))
-
             case 3:
                 sleep_time = 6 + (random.uniform(-1, 0.75))
 
