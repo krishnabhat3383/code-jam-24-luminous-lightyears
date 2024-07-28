@@ -46,6 +46,7 @@ class Template:
             title=f"{actor.name} of {player.state.nation_name}",
             description=self.format(player.state),
             color=message_color,
+            thumbnail=actor.picture
         )
 
     async def ui(self, player: "Player", actor: "Actor") -> None:
