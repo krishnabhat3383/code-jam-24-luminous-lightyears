@@ -1,3 +1,5 @@
+"""Module responsible for game actions."""
+
 import asyncio
 import logging
 import random
@@ -31,19 +33,20 @@ class Game:
         self.stage: Stage = 1
         self.max_time: float = random.uniform(12.5, 16)
         self.started: bool = False
-        self.creator: int | None = None
+        self.creator_id: int | None = None
         self.stop_flag: bool = False
         self.player_component_choice_mapping: dict[str, dict] = {}
         self.game_factory: GameFactory = game_factory
-
-        self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
-        # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
         self.values_to_check: list[str] = ["loyalty", "money", "security", "world_opinion"]
+
+        # Percentage of the time spent in the game when the next stage of the time begins (max value 1 = 100%)
+        self.cumm_percent_time_per_stage: list[float] = [0.25, 0.6, 1]
 
     async def add_player(self, ctx: SlashContext, cmd: str = "create") -> None:
         """Add a player to the game."""
+        logger.info(f"Adding player {ctx.user.id} to the game {self.id}")
         if cmd == "create":
-            self.creator = ctx.user.id
+            self.creator_id = ctx.user.id
         player = Player(ctx, self)
         await player.register()
         self.players[ctx.user.id] = player
@@ -51,8 +54,10 @@ class Game:
     async def remove_player(self, ctx: SlashContext) -> None:
         """Remove player from the game."""
         player_to_delete = ctx.user.id
+
         if player_to_delete in self.players:
             del self.players[player_to_delete]
+
         self.game_factory.remove_player(player_to_delete)
 
     async def death_player(self, dead_player: Player) -> None:
@@ -64,13 +69,27 @@ class Game:
         )
 
         for player in self.players.values():
-            await player.ctx.send(embed=embed)
+            await player.ctx.send(embed=embed, ephemeral=True)
 
         await self.remove_player(dead_player.ctx)
 
         if len(self.players) == 0 and self.started:
             self.stop()
             self.game_factory.remove_game(self.id)
+
+    async def stop_game_by_time(self) -> None:
+        """End game because the time is up."""
+        embed = Embed(
+            title="Time Up! Game Over!",
+            description=f"Game is over! Because time is up! We have {len(self.players)} survivors! You are one of them!",  # noqa: E501
+            color=system_message_color,
+        )
+
+        for player in list(self.players.values()):
+            await player.ctx.send(embed=embed, ephemeral=True)
+            await self.remove_player(player.ctx)
+
+        self.game_factory.remove_game(self.id)
 
     def stop(self) -> None:
         """Set the stop flag."""
@@ -90,9 +109,15 @@ class Game:
             if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (
                 game_time < self.max_time
             ):
-                self.stage = total_stages[
-                    total_stages.index(self.stage) + 1
-                ]  # This isn't the best, but it won't go out of bounds and doesn't break typing
+                self.stage = total_stages[total_stages.index(self.stage) + 1]
+
+            if game_time >= self.max_time:
+                logger.info(f"Time is Up! Game {self.id} is over!")
+                self.stop()
+                await self.stop_game_by_time()
+                break
+
+            logger.info(f"{game_time=} {self.stage=} {self.max_time=}")
 
             try:
                 response = await asyncio.gather(*[self.tick(player) for player in players], return_exceptions=True)
@@ -129,6 +154,8 @@ class Game:
                 await self.death_player(player)
                 return
 
+        # The sleep times are subject to change, based on how the actual gameplay feels
+        # The randomness gives a variability between the values mentioned in the brackets
         match self.stage:
             case 1:
                 sleep_time = 10 + (random.uniform(-2, 2))
@@ -139,5 +166,13 @@ class Game:
             case 3:
                 sleep_time = 6 + (random.uniform(-1, 0.75))
 
-        await asyncio.sleep(sleep_time)
-        await character.send(player)
+        character = all_characters.get_random(player.state)
+        while self.stage not in character.stages:
+            character = all_characters.get_random(player.state)
+
+        result = await character.send(player)
+
+        if result:
+            await asyncio.sleep(sleep_time)
+        else:
+            await asyncio.sleep(0.2)

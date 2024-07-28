@@ -1,3 +1,5 @@
+"""Module responsible for game interaction with discord."""
+
 import random
 import time
 from string import ascii_uppercase, digits
@@ -44,7 +46,7 @@ class GameFactory:
 
     def remove_player(self, player_id: int) -> None:
         """Remove a player game mapping."""
-        if player_id in self. players:
+        if player_id in self.players:
             del self.players[player_id]
 
     def remove_game(self, game_id: int) -> None:
@@ -153,7 +155,7 @@ class GameInteraction(Extension):
             await ctx.send(f"<@{ctx.user.id}> You are not part of any game", ephemeral=True)
             return
 
-        # if game.creator == ctx.user.id: # TODO: check this validity - needed of not
+        # if game.creator_id == ctx.user.id: # TODO: check this validity - needed of not
         #     await ctx.send(f"<@{ctx.user.id}> Game creator cannot leave the game", ephemeral=True)  # noqa: ERA001
         #     return  # noqa: ERA001
 
@@ -183,7 +185,7 @@ class GameInteraction(Extension):
             await ctx.send(f"<@{ctx.user.id}> You are not part of any game", ephemeral=True)
             return
 
-        if game.creator != ctx.user.id:
+        if game.creator_id != ctx.user.id:
             await ctx.send(f"<@{ctx.user.id}> Only game creator can start it", ephemeral=True)
             return
 
@@ -218,6 +220,5 @@ class GameInteraction(Extension):
         player.state.apply(consequences)
         player.current_activity_time = time.time()
         player.last_activity_time = player.current_activity_time
-        print(player.state)
         await ctx.edit_origin(content=f"Your response ({ctx.component.label}) saved.", components=[])
         del game.player_component_choice_mapping[ctx.custom_id]

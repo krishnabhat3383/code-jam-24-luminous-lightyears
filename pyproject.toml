@@ -17,30 +17,12 @@ src = ["src"]
 select = ["ALL"]
 # Ignore some of the most obnoxious linting errors.
 ignore = [
-    # Missing docstrings.
-    "D100",
-    "D104",
-    "D105",
-    "D106",
+    # `id` as arg
+    "A002",
+    # Init doc strings
     "D107",
-    # Docstring whitespace.
-    "D203",
-    "D213",
-    # Docstring punctuation.
-    "D415",
-    # Docstring quotes.
-    "D301",
-    # Builtins.
-    "A",
-    # Print statements.
-    "T20",
-    # TODOs.
-    "TD002",
-    "TD003",
-    "FIX",
-    # Annotations.
-    "ANN101",
-    "ANN102",
+    # We are using f-strings in logger
+    "G004",
     # We never use random for cryptographic purposes
     "S311",
 ]

@@ -17,7 +17,7 @@ class PlayerState:
     money: float = 100
 
     # How loyal people feel to the current government that you have created
-    loyalty: float = 10
+    loyalty: float = 50
 
     # How vulnerable is the country from external threats
     security: float = 50
