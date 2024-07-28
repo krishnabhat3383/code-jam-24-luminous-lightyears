@@ -95,7 +95,7 @@ class GameInteraction(Extension):
         "Number of players required for the game",
         required=True,
         opt_type=OptionType.INTEGER,
-        min_value=1,
+        min_value=2,
         max_value=10,
     )
     async def create(self, ctx: SlashContext, required_no_of_players: int = 5) -> None:
