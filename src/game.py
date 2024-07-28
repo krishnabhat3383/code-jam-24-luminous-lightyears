@@ -126,6 +126,15 @@ class Game:
                 game_time < self.max_time
             ):
                 self.stage = total_stages[total_stages.index(self.stage) + 1]
+                for player in self.players.values():
+                    await player.ctx.send(
+                        Embed(
+                            title="Your current stats are as follows",
+                            description=f"{player.state}",
+                            color=system_message_color,
+                        )
+                    )
+
 
             if game_time >= self.max_time:
                 logger.info(f"Time is Up! Game {self.id} is over!")
