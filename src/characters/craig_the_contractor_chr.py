@@ -19,6 +19,14 @@ character = Actor("Craig the Contractor", "url_here",[
                        "Great": {"world_opinion" : +10},
             },
         ),
+        t(
+            "Some contractors are requesting bonuses for their hard work. Should we approve this?",
+            choices={
+                "Approve bonuses": {"money": -8, "loyalty": +4},
+                "Deny the request": {"loyalty": -3},
+            },
+            condition=lambda state: state.money > 50,
+        ),
     ]),
     StageGroup(2, [
         t("Leader of {nation_name}, we must upgrade our old government buildings.",
@@ -28,10 +36,25 @@ character = Actor("Craig the Contractor", "url_here",[
                  },
             ),
         t(
-            "We have shown great strides in the redevelopment plan, would you hold the inaguration ceremony.",
+            "We have shown great strides in the redevelopment plan, would you hold the inaguration ceremony?",
             choices = {"Yes!": {"money": +5, "loyalty":+10,  "world_opinion" : +10},
                        "No!" : { "loyalty" : -5}},
             condition = lambda state: state.loyalty>40,
+        ),
+        t(
+            "We've been asked to build a new hospital in a rural area. Should we take on this project?",
+            choices={
+                "Yes, build the hospital": {"money": -20, "security": +10, "loyalty": +5},
+                "No, it's too expensive": {"security": -5, "loyalty": -3},
+            },
+        ),
+        t(
+            "The construction team suggests a new eco-friendly building method. Should we adopt it?",
+            choices={
+                "Adopt the new method": {"money": -10, "world_opinion": +10},
+                "Stick to old methods": {"world_opinion": -5},
+            },
+            condition=lambda state: state.world_opinion > 50,
         ),
     ]),
     StageGroup(3, [
@@ -42,9 +65,19 @@ character = Actor("Craig the Contractor", "url_here",[
                  },
             ),
         t(
-            "Great! Now the likelihood of floods would be decreased.",
-            choices = {"Great!": {"money": +20,  "world_opinion" : +10,  "loyalty" : +10}},
-            condition = lambda state: state.loyalty>10,
+            "The international community is considering us for a prestigious construction award. Should we lobby for it?",  # noqa: E501
+            choices={
+                "Yes, lobby for the award": {"money": -10, "world_opinion": +15, "loyalty": +5},
+                "No, it's not worth it": {"world_opinion": -5},
+            },
+        ),
+        t(
+            "Several community leaders are asking for funds to improve local infrastructure. Should we approve it?",
+            choices={
+                "Approve the funds": {"money": -20, "security": +10},
+                "No, we can't afford it": {"security": -5},
+            },
+            condition=lambda state: state.money > 100,
         ),
     ]),
 ])
