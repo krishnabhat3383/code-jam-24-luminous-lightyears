@@ -204,13 +204,13 @@ class GameInteraction(Extension):
         if game is None:
             description = f"<@{ctx.user.id}> You are not part of any game"
 
-        if game.creator_id != ctx.user.id:
+        elif game.creator_id != ctx.user.id:
             description = f"<@{ctx.user.id}> Only game creator can start it"
 
-        if game.started:
+        elif game.started:
             description = f"<@{ctx.user.id}> Game already started"
 
-        if game.required_no_of_players != len(game.players):
+        elif game.required_no_of_players != len(game.players):
             description = f"<@{ctx.user.id}> Cannot start the game until all the players join"
 
         if description != "":
