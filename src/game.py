@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING, Annotated
 from interactions import Embed, SlashContext
 
 from src.characters import all_characters
-from src.const import error_color, system_message_color
+from src.const import AFK_TIME, error_color, system_message_color
 from src.player import Player
 from src.templating import total_stages
 
@@ -33,7 +33,7 @@ class Game:
         self.max_time: float = random.uniform(12.5, 16)
         self.started: bool = False
         self.creator_id: int | None = None
-        self.stop_flag: bool = False
+        self.game_stop_flag: bool = False
         self.player_component_choice_mapping: dict[str, dict] = {}
         self.game_factory: GameFactory = game_factory
         self.values_to_check: list[str] = ["loyalty", "money", "security", "world_opinion"]
@@ -76,6 +76,22 @@ class Game:
             self.stop()
             self.game_factory.remove_game(self.id)
 
+    async def disqualify_player(self, player: Player) -> None:
+        """Disqualify inactive player."""
+        embed = Embed(
+            title="We have lost a national leader due to inactivity.",
+            description=f"{player.state.nation_name} has lost their leadership which was done by \n <@{player.ctx.user.id}>",  # noqa: E501
+            color=system_message_color,
+        )
+        for _player in self.players.values():
+            await _player.ctx.send(embed=embed, ephemeral=True)
+
+        await self.remove_player(player.ctx)
+
+        if len(self.players) == 0 and self.started:
+            self.stop()
+            self.game_factory.remove_game(self.id)
+
     async def stop_game_by_time(self) -> None:
         """End game because the time is up."""
         embed = Embed(
@@ -92,20 +108,20 @@ class Game:
 
     def stop(self) -> None:
         """Set the stop flag."""
-        self.stop_flag = True
+        self.game_stop_flag = True
 
     async def loop(self) -> None:
         """Define the main loop of the game."""
         self.start_time = time.time()
-
         players = self.players.values()
 
         while True:
-            if self.stop_flag:
+            logger.info(f"{len(self.players)} left in game {self.id}")
+
+            if self.game_stop_flag:
                 break
 
             game_time: float = (time.time() - self.start_time) / 60
-
             if (game_time > self.cumm_percent_time_per_stage[self.stage - 1] * self.max_time) and (
                 game_time < self.max_time
             ):
@@ -139,9 +155,14 @@ class Game:
 
     async def tick(self, player: Player) -> None:
         """Define the activities done in every game tick."""
-        if self.stop_flag:
+        if self.game_stop_flag:
             return
 
+        if (time.time() - player.last_activity_time) > AFK_TIME:
+            await self.disqualify_player(player)
+            return
+
+        character = all_characters.get_random(player.state)
         for attr in self.values_to_check:
             if getattr(player.state, attr) < 0:
                 # Some value is negative hence need to send the losing message
@@ -153,10 +174,8 @@ class Game:
         match self.stage:
             case 1:
                 sleep_time = 10 + (random.uniform(-2, 2))
-
             case 2:
                 sleep_time = 8 + (random.uniform(-2, 1.5))
-
             case 3:
                 sleep_time = 6 + (random.uniform(-1, 0.75))
 

@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-
+import time
 from attrs import define
 from interactions import Modal, ModalContext, ShortText, SlashContext
 
@@ -33,9 +33,10 @@ class PlayerState:
 
 class Player:
     def __init__(self, ctx: SlashContext, game: "Game") -> None:
-        self.ctx = ctx
+        self.ctx: SlashContext = ctx
         self.state: PlayerState = None  # type: ignore TODO: properly type that state isn't none after register
-        self.game: Game = game
+        self.game: Game= game
+        self.last_activity_time: float = 0
         self.component_id: int = 0
 
     def get_component_id(self) -> int:
