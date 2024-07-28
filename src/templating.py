@@ -1,11 +1,14 @@
+"""Utils for creating and using templates."""
+
+import logging
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any, Literal, get_args
 
 from attrs import asdict, field, frozen
 from interactions import ActionRow, Button, ButtonStyle, Embed
 
-from src.weighted_random import WeightedList
 from src.const import message_color
+from src.weighted_random import WeightedList
 
 if TYPE_CHECKING:
     from src.player import Player, PlayerState
@@ -13,6 +16,8 @@ if TYPE_CHECKING:
 Consequence = dict[Any, Any]
 Condition = Callable[["PlayerState"], bool] | None
 Stage = Literal[1, 2, 3]  # Adjustable
+
+logger = logging.getLogger(__name__)
 
 
 @frozen
@@ -28,6 +33,7 @@ class Template:
         return self.text.format(**asdict(state))
 
     def is_available(self, state: "PlayerState") -> bool:
+        """Check whether the template is available to serve."""
         if self.condition is not None:
             return self.condition(state)
 
@@ -43,10 +49,12 @@ class Template:
         )
 
     async def ui(self, player: "Player", actor: "Actor") -> None:
+        """Send template data to ui."""
         await player.ctx.send(embed=self.to_embed(player, actor), ephemeral=True)
 
 
 def not_none(var: Any | None) -> Any:  # noqa: ANN401 temporary workaround FIXME
+    """Workaround for none check."""
     if var is None:
         raise AttributeError
 
@@ -55,6 +63,8 @@ def not_none(var: Any | None) -> Any:  # noqa: ANN401 temporary workaround FIXME
 
 @frozen
 class ChoiceTemplate(Template):
+    """Make a template for the messages to be served."""
+
     choices: dict[str, Consequence] = field(default=None, converter=not_none)  # Specify button color here somehow.
 
     async def ui(self, player: "Player", actor: "Actor") -> None:
@@ -85,6 +95,7 @@ class StageGroup:
 
     @staticmethod
     def convert_stage(stage: Stage | list[Stage] | Literal["all"]) -> list[Stage]:
+        """Conver stage into a required a data type."""
         if stage == "all":
             return list(total_stages)
         if isinstance(stage, int):
@@ -98,8 +109,11 @@ class StageGroup:
 
 @frozen
 class Actor:
+    """Respresents an actor who asks/gives information to the leader."""
+
     @staticmethod
     def cast_stages(stage_groups: list[StageGroup]) -> dict[Stage, WeightedList[Template]]:
+        """Cast stages into a weighted list."""
         stages: dict[Stage, WeightedList[Template]] = {}
 
         for stage_slot in total_stages:
@@ -125,6 +139,15 @@ class Actor:
         return True
 
     async def send(self, target: "Player") -> None:
+        """Send template to discord ui."""
         stage = self.stages[target.game.stage]
         template = stage.get_random(target.state)
-        await template.ui(target, self)
+        sent = False
+
+        if template:
+            sent = True
+            await template.ui(target, self)
+        else:
+            logger.info(f"Template not available for {stage=} in {self.name}")
+
+        return sent
