@@ -6,6 +6,7 @@ import random
 import time
 from typing import TYPE_CHECKING, Annotated
 
+from attrs import asdict
 from interactions import Embed, SlashContext
 
 from src.characters import all_characters
@@ -63,9 +64,12 @@ class Game:
         """Mark the player as dead."""
         embed = Embed(
             title="We have lost a national leader in the turmoil",
-            description=f"{dead_player.state.nation_name} has lost their leadership which was done by \n <@{dead_player.ctx.user.id}>",  # noqa: E501
+            description=f"{dead_player.state.nation_name} has lost their leadership which was done by <@{dead_player.ctx.user.id}>",  # noqa: E501
             color=system_message_color,
         )
+
+        for key, value in asdict(dead_player.state).items():
+            embed.add_field(name=key.capitalize(), value=value)
 
         for player in self.players.values():
             await player.ctx.send(embed=embed, ephemeral=True)
@@ -106,6 +110,19 @@ class Game:
 
         self.game_factory.remove_game(self.id)
 
+    async def send_stats(self) -> None:
+        """Send player stats."""
+        for player in self.players.values():
+            embed = Embed(
+                title="Stats",
+                description=f"<@{player.ctx.user.id}> current stats as follows,",
+                color=system_message_color,
+            )
+            for key, value in asdict(player.state).items():
+                embed.add_field(name=key.capitalize(), value=value)
+
+            await player.ctx.send(embed=embed, ephemeral=True)
+
     def stop(self) -> None:
         """Set the stop flag."""
         self.game_stop_flag = True
@@ -114,6 +131,7 @@ class Game:
         """Define the main loop of the game."""
         self.start_time = time.time()
         players = self.players.values()
+        await self.send_stats()
 
         while True:
             logger.info(f"{len(self.players)} left in game {self.id}")
@@ -126,15 +144,7 @@ class Game:
                 game_time < self.max_time
             ):
                 self.stage = total_stages[total_stages.index(self.stage) + 1]
-                for player in self.players.values():
-                    await player.ctx.send(
-                        Embed(
-                            title="Your current stats are as follows",
-                            description=f"{player.state}",
-                            color=system_message_color,
-                        )
-                    )
-
+                await self.send_stats()
 
             if game_time >= self.max_time:
                 logger.info(f"Time is Up! Game {self.id} is over!")
@@ -173,7 +183,7 @@ class Game:
 
         character = all_characters.get_random(player.state)
         for attr in self.values_to_check:
-            if getattr(player.state, attr) < 0:
+            if getattr(player.state, attr) <= 0:
                 # Some value is negative hence need to send the losing message
                 await self.death_player(player)
                 return
