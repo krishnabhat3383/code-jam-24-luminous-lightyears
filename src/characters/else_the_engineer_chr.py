@@ -1,6 +1,9 @@
-from src.templating import Actor, StageGroup
-from src.templating import ChoiceTemplate as t
+"""Else character template."""
 
+from src.templating import Actor, StageGroup
+from src.templating import ChoiceTemplate as t  # noqa: N813
+
+# fmt: off
 character = Actor("Elsa the Engineer", "url_here",[
     StageGroup(1, [
         t(

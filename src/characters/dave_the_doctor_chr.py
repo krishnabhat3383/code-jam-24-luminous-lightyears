@@ -1,6 +1,9 @@
-from src.templating import Actor, StageGroup
-from src.templating import ChoiceTemplate as t
+"""Dave the doctor character template."""
 
+from src.templating import Actor, StageGroup
+from src.templating import ChoiceTemplate as t  # noqa: N813
+
+# fmt: off
 character = Actor("Dave the Doctor", "url_here",[
     StageGroup(1, [
         t(
@@ -13,7 +16,7 @@ character = Actor("Dave the Doctor", "url_here",[
         t(
             "We have manufactured the vaccines, but lack the funding to distribute, we require your assistance\
                 on this",
-            choices = {"Sure": {"money": -15, "Nope":{ "world_opinion" : -20,  "security" : -10,  "loyalty" : -10}}}
+            choices = {"Sure": {"money": -15, "Nope":{ "world_opinion" : -20,  "security" : -10,  "loyalty" : -10}}},
         ),
     ]),
     StageGroup(2, [

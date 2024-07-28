@@ -1,6 +1,9 @@
-from src.templating import Actor, StageGroup
-from src.templating import ChoiceTemplate as t
+"""Craig character template."""
 
+from src.templating import Actor, StageGroup
+from src.templating import ChoiceTemplate as t  # noqa: N813
+
+# fmt: off
 character = Actor("Craig the Contractor", "url_here",[
     StageGroup(1, [
         t(
@@ -13,7 +16,7 @@ character = Actor("Craig the Contractor", "url_here",[
         t(
             "The roads are being repaired thanks to the funds provided",
             choices = {"Take more funds": {"money": -10,  "loyalty" : +10},
-                       "Great": {"world_opinion" : +10}
+                       "Great": {"world_opinion" : +10},
             },
         ),
     ]),
@@ -45,4 +48,3 @@ character = Actor("Craig the Contractor", "url_here",[
         ),
     ]),
 ])
-

@@ -1,6 +1,9 @@
-from src.templating import Actor, StageGroup
-from src.templating import ChoiceTemplate as t
+"""Aura character template."""
 
+from src.templating import Actor, StageGroup
+from src.templating import ChoiceTemplate as t  # noqa: N813
+
+# fmt: off
 character = Actor("Aura the Activist", "url_here",[
     StageGroup(1, [
         t(
@@ -49,8 +52,7 @@ character = Actor("Aura the Activist", "url_here",[
         t(
             "News in someone gassed the rally.",
             choices = {"Great!": {"money": -10,  "world_opinion" : -10,  "security" : -5}},
-            condition = lambda state: state.loyalty<90 and state.security<100
+            condition = lambda state: state.loyalty<90 and state.security<100,
         ),
     ]),
 ])
-

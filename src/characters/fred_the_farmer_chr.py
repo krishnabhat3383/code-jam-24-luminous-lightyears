@@ -1,9 +1,7 @@
-"""Example character template."""
+"""Fred character template."""
 
 from src.templating import Actor, StageGroup
 from src.templating import ChoiceTemplate as t  # noqa: N813
-
-# fmt: off
 
 # fmt: off
 character = Actor("Fred the Farmer", "url_here",[
@@ -45,5 +43,5 @@ character = Actor("Fred the Farmer", "url_here",[
             "We are able to do our work more effectively now",
             choices = {"Great!": {"money": +20}},
         ),
-    ]),  
+    ]),
 ])

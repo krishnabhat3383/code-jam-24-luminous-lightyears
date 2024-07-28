@@ -1,6 +1,9 @@
-from src.templating import Actor, StageGroup
-from src.templating import ChoiceTemplate as t
+"""Andy character template."""
 
+from src.templating import Actor, StageGroup
+from src.templating import ChoiceTemplate as t  # noqa: N813
+
+# fmt: off
 character = Actor("Andy the Athlete", "url_here",[
     StageGroup(1, [
         t(
@@ -48,4 +51,3 @@ character = Actor("Andy the Athlete", "url_here",[
         ),
     ]),
 ])
-
