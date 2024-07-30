@@ -101,7 +101,58 @@ After every stage we show the player's attributes so they need to make a quick p
 - ...
 
 ## Installation
-- ...
+
+We require you to have `python 3.12`.
+
+### Clone
+
+```sh
+git clone https://github.com/krishnabhat3383/code-jam-24-luminous-lightyears.git
+```
+
+if you prefer ssh way,
+
+```sh
+git clone git@github.com:krishnabhat3383/code-jam-24-luminous-lightyears.git
+```
+
+### Create Virtual Environment
+
+```sh
+python3 -m venv .venv
+```
+
+### Activate Virtual Environment
+
+```sh
+source .venv/bin/activate
+```
+
+### Install Requirements
+
+```sh
+pip install -r requirements.txt
+```
+
+### Setup Bot Token
+
+```sh
+export DEFCON_BOT_TOKEN=<token>
+```
+
+for a persistent way,
+
+```sh
+touch .env
+
+echo "DEFCON_BOT_TOKEN=<token>" >> .env
+```
+
+### Run The Application
+
+```sh
+python main.py
+```
 
 ## Demo
 
