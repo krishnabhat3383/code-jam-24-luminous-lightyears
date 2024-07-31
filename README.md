@@ -4,7 +4,7 @@
   <summary>Table Of Contents</summary>
   <ol>
     <li>
-      <a href="#about">about</a>
+      <a href="#about">About</a>
     </li>
     <li>
       <a href="#vital-attributes">Vital Attributes</a>
@@ -90,10 +90,9 @@ After every stage we show the player's attributes so they need to make a quick p
 ## Enhancements
 
 - Include attribute sabotage and request mechanism so that it'll be more PvP instead of PvE.
-- Include present-time and real information so that the game will give knowledge to players.
 - Game time can be configurable by the creator
 - Include encryption like mechanism to make it harder for the user
-- Option to stop the game by the creator (current work around is to make all players leave)
+- Option to stop the game by the creator (current work around is to make all players leave / die)
 - Enhance random information picking logic to make it more relevant to the players context and reduce repetitiveness of information
 - Option to pause the game
 
