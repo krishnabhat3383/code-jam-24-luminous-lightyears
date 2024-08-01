@@ -28,7 +28,7 @@
       <a href="#contributions">Contributions</a>
     </li>
     <li>
-      <a href="#installation">Installation of the bot</a>
+      <a href="#installation">Running the bot</a>
     </li>
     <li>
       <a href="#demo">Demo of the game</a>
@@ -114,7 +114,8 @@ After every stage we show the player's attributes so they need to make a quick p
 
 ## Known Issues
 
-- If you use the `/defcord start` when you didn't create a game or try to start a game again, it'll show as application didn't respond. This is due to a bug where we missed to put an `await` of a response.
+- `/defcord start` will show as `Application did not respond` in the invalid use case scenarios instead of showing a relevant message to the user. This is due to a fact that we missed to `await` that message call during a code refactor.
+- We have an image embedded in each message to represent the actor of the message. But sometimes the service that we used to host the images goes down. So sometimes the images won't appear. If you receive any error due to this in the console or bot crashes due to this, you can set this env variable `WITHOUT_ACTOR_THUMBNAIL` to `True` to disable thumbnail functionality.
 
 ## Enhancements
 
@@ -127,11 +128,12 @@ After every stage we show the player's attributes so they need to make a quick p
 - Option to start the game if everyone has not joined.
 
 ## Contributions
+
 - Clueless_conoisseur(krishnabhat is Github name) - Checking of some of the PRs and structuring of the project
-- Automafun(Dhavantg is Github name) - Basic game character formation, logo making
-- Diverman(hazyfossa is Github name) -  Coding of game factory, player classes, Implementation of character templates to the game, Weighted randomness for appreance of characters logic 
-- Maheshkumar - Coding of button interactions,  defcord start command, Coding of Advanced UI components
-- Sapient - Adding of basic UI elements, coding PlayerState  class' default (instance) values, creating Game class, creating game flow from stages, Adding of Anti AFK, Images for the characters in the game 
+- Automafun(Dhavantg is Github name) - Basic game character formation, Logo making
+- Diverman(hazyfossa is Github name) -  Coding of game factory, Player classes, Implementation of character templates to the game, Weighted randomness for appearance of characters logic 
+- Maheshkumar - Coding of button interactions,  Defcord start command, Coding of Advanced UI components
+- Sapient - Adding of basic UI elements, Coding PlayerState  class' default (instance) values, Creating Game class, Creating game flow from stages, Adding of Anti AFK, Images for the characters in the game 
 
 
 ## Installation
