@@ -10,6 +10,9 @@
       <a href="#vital-attributes">Vital Attributes</a>
     </li>
     <li>
+      <a href="#contributions">Contributions</a>
+    </li>
+    <li>
       <a href="#Demo">Demo of the game</a>
     </li>
   </ol>
