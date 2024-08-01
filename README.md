@@ -137,12 +137,11 @@ After every stage we show the player's attributes so they need to make a quick p
 
 ## Contributions
 
-- Clueless_conoisseur(krishnabhat is Github name) - Checking of some of the PRs and structuring of the project
-- Automafun(Dhavantg is Github name) - Basic game character formation, Logo making
-- Diverman(hazyfossa is Github name) -  Coding of game factory, Player classes, Implementation of character templates to the game, Weighted randomness for appearance of characters logic 
-- Maheshkumar - Coding of button interactions,  Defcord start command, Coding of Advanced UI components
-- Sapient - Adding of basic UI elements, Coding PlayerState  class' default (instance) values, Creating Game class, Creating game flow from stages, Adding of Anti AFK, Images for the characters in the game 
-
+- **Clueless_conoisseur** (krishnabhat): Checking PRs, structuring the project
+- **Automafun** (Dhanvantg): Basic game character formation, logo creation
+- **Diverman** (hazyfossa): Coding game factory, player classes, implementing character templates, weighted randomness logic
+- **Maheshkumar**: Coding button interactions, `defcord start` command, advanced UI components
+- **Sapient**: Basic UI elements, PlayerState class default values, Game class creation, game flow, Anti-AFK mechanism, character images
 
 ## Installation
 
