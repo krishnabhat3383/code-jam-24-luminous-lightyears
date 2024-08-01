@@ -1,184 +1,251 @@
-# Python Discord Code Jam Repository Template
+<p align="center" id="defcord">
+  <img src="https://github.com/user-attachments/assets/97a9a8f3-9749-4a47-91d8-7bafe9071199" alt="Game Logo" width="200" height="200">
+</p>
 
-## A primer
+<h1 align="center">Defcord</h1>
 
-Hello code jam participants! We've put together this repository template for you to use in [our code jams](https://pythondiscord.com/events/) or even other Python events!
+<p align="center"><i>Lead Nations. Compete. Outsmart.</i></p>
 
-This document contains the following information:
+<details open="open">
+  <summary>Table Of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about">About</a>
+    </li>
+    <li>
+      <a href="#vital-attributes">Vital Attributes</a>
+    </li>
+    <li>
+      <a href="#game-model">Game Model</a>
+    </li>
+    <li>
+      <a href="#commands-available">Commands Available</a>
+    </li>
+    <li>
+      <a href="#theme-relativity">How the bot relate to the theme `Information Overload`</a>
+    </li>
+    <li>
+      <a href="#known-issues">Known Issues</a>
+    </li>
+    <li>
+      <a href="#enhancements">Enhancements</a>
+    </li>
+    <li>
+      <a href="#contributions">Contributions</a>
+    </li>
+    <li>
+      <a href="#running-the-app">Running the App</a>
+    </li>
+    <li>
+      <a href="#demo">Demo of the game</a>
+    </li>
+  </ol>
+</details>
 
-1. [What does this template contain?](#what-does-this-template-contain)
-2. [How do I use this template?](#how-do-i-use-this-template)
-3. [How do I adapt this template to my project?](#how-do-i-adapt-this-template-to-my-project)
+## About
 
-> [!TIP]
-> You can also look at [our style guide](https://pythondiscord.com/events/code-jams/code-style-guide/) to get more information about what we consider a maintainable code style.
+Defcord is a multiplayer, discord application based game.
 
-## What does this template contain?
+You play as a leader of a nation and it is your responsibility to make good decisions based on the information given to you.
 
-Here is a quick rundown of what each file in this repository contains:
+You should make sure all of your vital attributes stay positive.
 
-- [`LICENSE.txt`](LICENSE.txt): [The MIT License](https://opensource.org/licenses/MIT), an OSS approved license which grants rights to everyone to use and modify your project, and limits your liability. We highly recommend you to read the license.
-- [`.gitignore`](.gitignore): A list of files and directories that will be ignored by Git. Most of them are auto-generated or contain data that you wouldn't want to share publicly.
-- [`requirements-dev.txt`](requirements-dev.txt): Every PyPI package used for the project's development, to ensure a common development environment. More on that [below](#using-the-default-pip-setup).
-- [`pyproject.toml`](pyproject.toml): Configuration and metadata for the project, as well as the linting tool Ruff. If you're interested, you can read more about `pyproject.toml` in the [Python Packaging documentation](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/).
-- [`.pre-commit-config.yaml`](.pre-commit-config.yaml): The configuration of the [pre-commit](https://pre-commit.com/) tool.
-- [`.github/workflows/lint.yaml`](.github/workflows/lint.yaml): A [GitHub Actions](https://github.com/features/actions) workflow, a set of actions run by GitHub on their server after each push, to ensure the style requirements are met.
+You can't know what vital attributes increase/decrease for the given information for the decision you make because you know, people are complex.
 
-Each of these files have comments for you to understand easily, and modify to fit your needs.
+Whoever stays alive till the end of the game is the survivor of the game. If multiple people survive they are also survivors.
 
-### Ruff: general style rules
+The main goal is to make sure you won't run out of your vital attributes in order to survive.
 
-Our first tool is Ruff. It will check your codebase and warn you about any non-conforming lines.
-It is run with the command `ruff check` in the project root.
+## Vital Attributes
 
-Here is a sample output:
+| Attribute     | Default Value |
+|---------------|---------------|
+| Money         | 100           |
+| Loyalty       | 50            |
+| Security      | 50            |
+| World Opinion | 50            |
 
-```shell
-$ ruff check
-app.py:1:5: N802 Function name `helloWorld` should be lowercase
-app.py:1:5: ANN201 Missing return type annotation for public function `helloWorld`
-app.py:2:5: D400 First line should end with a period
-app.py:2:5: D403 First word of the first line should be capitalized: `docstring` -> `Docstring`
-app.py:3:15: W292 No newline at end of file
-Found 5 errors.
+## Game Model
+
+One player is mapped with only one game. So at a time, a player can game participate in only one game.
+
+The game time will be a random time between `12.5` and `16` minutes.
+
+We have `3` stages, each stage will make the information flow faster.
+
+If the player is AFK or non-responsive to the information for `60` seconds, they're disqualified automatically.
+
+## Commands available
+
+
+### `/defcord create`
+
+We use this command to create a defcord game. Whoever creates will be part of the game by default and they'll be the only one who can start the game.
+
+User needs to enter the number of players they want in the game and the nation name they want to be the leader of.
+
+Once the game is created, a message will be posted with the invite code. Other players need to use the invite code to join the game.
+
+A player can join from a different channel or even a different server. Only requirement is in that server `defcord` should be installed.
+
+
+### `/defcord join`
+
+Other payers need to use this command with the given/taken invite code from the game creator in order to join a `defcord` game.
+
+They also need to enter their nation name, via a modal prompt.
+
+
+### `/defcord start`
+
+Once the required number of players join, the game creator can start the game. Once invoked, the command will automatically start the game that the current player created and part of.
+
+After that, stage `1` begins. Players will receive information at a slow rate first, as the game progresses it'll get faster.
+
+Now the players should start respond to the information by making a good decision in order to survive.
+
+
+### `/defcord leave`
+
+If the player wants to leave in the middle of the game or before the game start, they can do. But if they leave in the middle of the game, they cannot rejoin. They can join another game.
+
+If you are the last member to quit, you are the survivor of the game as you have no one to compete. But you can play till the game time and see what the game brings you. If you run out of an attribute than you are done.
+
+
+## Theme Relativity
+
+Given theme is `Information Overload`. Here we try to make the player overwhelmed by giving them information continuously.
+
+They need to keep making good decisions in order to survive. Because they can't give `yes` to all the requests i.e. army tool requests, it'll cost their money. This is also applicable to the reverse situation where the player denies all requests.
+
+After every stage we show the player's attributes so they need to make a quick play to proceed with the next stage. We have AFK mechanism in place so they can't sit idle, information flow till the game end.
+
+## Known Issues
+
+- `/defcord start` will show as `Application did not respond` in the invalid use case scenarios instead of showing a relevant message to the user. This is due to a fact that we missed to `await` that message call during a code refactor. Invalid use case scenarios,
+  * Trying to start the game without being in one
+  * When in a game, trying to start it (only creator can)
+  * Trying to start a game is already running
+  * Trying to start the game before all the players join
+- We have an image embedded in each message to represent the actor of the message. But sometimes the service that we used to host the images goes down. So sometimes the images won't appear. If you receive any error due to this in the console or bot crashes due to this, you can set this env variable `WITHOUT_ACTOR_THUMBNAIL` to `True` to disable thumbnail functionality.
+
+## Enhancements
+
+- Include attribute sabotage and request mechanism so that it'll be more PvP instead of PvE.
+- Game time can be configurable by the creator.
+- Include encryption like mechanism to make it harder for the user.
+- Option to stop the game by the creator (current work around is to make all players leave / die).
+- Enhance random information picking logic to make it more relevant to the players context and reduce repetitiveness of information.
+- Option to pause the game.
+- Option to start the game if everyone has not joined.
+
+## Contributions
+
+- **Clueless_conoisseur** (krishnabhat): Checking PRs, structuring the project
+- **Automafun** (Dhanvantg): Basic game character formation, logo creation
+- **Diverman** (hazyfossa): Coding game factory, player classes, implementing character templates, weighted randomness logic
+- **Maheshkumar**: Coding button interactions, defcord start command, advanced UI components
+- **Sapient**: Basic UI elements, PlayerState class default values, Game class creation, game flow, Anti-AFK mechanism, character images
+
+## Running The App
+
+We require you to have `python 3.12`.
+
+### Clone
+
+```sh
+git clone https://github.com/krishnabhat3383/code-jam-24-luminous-lightyears.git
 ```
 
-Each line corresponds to an error. The first part is the file path, then the line number, and the column index.
-Then comes the error code, a unique identifier of the error, and then a human-readable message.
+if you prefer ssh way,
 
-If, for any reason, you do not wish to comply with this specific error on a specific line, you can add `# noqa: CODE` at the end of the line.
-For example:
-
-```python
-def helloWorld():  # noqa: N802
-    ...
-
+```sh
+git clone git@github.com:krishnabhat3383/code-jam-24-luminous-lightyears.git
 ```
 
-This will ignore the function naming issue and pass linting.
+### Move To Directory
 
-> [!WARNING]
-> We do not recommend ignoring errors unless you have a good reason to do so.
-
-### Ruff: formatting
-
-Ruff also comes with a formatter, which can be run with the command `ruff format`.
-It follows the same code style enforced by [Black](https://black.readthedocs.io/en/stable/index.html), so there's no need to pick between them.
-
-### Pre-commit: run linting before committing
-
-The second tool doesn't check your code, but rather makes sure that you actually *do* check it.
-
-It makes use of a feature called [Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) which allow you to run a piece of code before running `git commit`.
-The good thing about it is that it will cancel your commit if the lint doesn't pass. You won't have to wait for GitHub Actions to report issues and have a second fix commit.
-
-It is *installed* by running `pre-commit install` and can be run manually by calling only `pre-commit`.
-
-[Lint before you push!](https://soundcloud.com/lemonsaurusrex/lint-before-you-push)
-
-#### List of hooks
-
-- `check-toml`: Lints and corrects your TOML files.
-- `check-yaml`: Lints and corrects your YAML files.
-- `end-of-file-fixer`: Makes sure you always have an empty line at the end of your file.
-- `trailing-whitespace`: Removes whitespaces at the end of each line.
-- `ruff`: Runs the Ruff linter.
-- `ruff-format`: Runs the Ruff formatter.
-
-## How do I use this template?
-
-### Creating your team repository
-
-One person in the team, preferably the leader, will have to create the repository and add other members as collaborators.
-
-1. In the top right corner of your screen, where **Clone** usually is, you have a **Use this template** button to click.
-   ![use-this-template-button](https://docs.github.com/assets/images/help/repository/use-this-template-button.png)
-2. Give the repository a name and a description.
-   ![create-repository-name](https://docs.github.com/assets/images/help/repository/create-repository-name.png)
-3. Click **Create repository from template**.
-4. Click **Settings** in your newly created repository.
-   ![repo-actions-settings](https://docs.github.com/assets/images/help/repository/repo-actions-settings.png)
-5. In the "Access" section of the sidebar, click **Collaborators**.
-   ![collaborators-settings](https://github.com/python-discord/code-jam-template/assets/63936253/c150110e-d1b5-4e4d-93e0-0a2cf1de352b)
-6. Click **Add people**.
-7. Insert the names of each of your teammates, and invite them. Once they have accepted the invitation in their email, they will have write access to the repository.
-
-You are now ready to go! Sit down, relax, and wait for the kickstart!
-
-> [!IMPORTANT]
-> Don't forget to swap "Python Discord" in the [`LICENSE.txt`](LICENSE.txt) file for the name of each of your team members or the name of your team *after* the start of the code jam.
-
-### Using the default pip setup
-
-Our default setup includes a bare requirements file to be used with a [virtual environment](https://docs.python.org/3/library/venv.html).
-We recommend this if you have never used any other dependency manager, although if you have, feel free to switch to it. More on that [below](#how-do-i-adapt-this-template-to-my-project).
-
-#### Creating the environment
-
-Create a virtual environment in the folder `.venv`.
-
-```shell
-python -m venv .venv
+```sh
+cd code-jam-24-luminous-lightyears
 ```
 
-#### Entering the environment
+### Create Virtual Environment
 
-It will change based on your operating system and shell.
-
-```shell
-# Linux, Bash
-$ source .venv/bin/activate
-# Linux, Fish
-$ source .venv/bin/activate.fish
-# Linux, Csh
-$ source .venv/bin/activate.csh
-# Linux, PowerShell Core
-$ .venv/bin/Activate.ps1
-# Windows, cmd.exe
-> .venv\Scripts\activate.bat
-# Windows, PowerShell
-> .venv\Scripts\Activate.ps1
+```sh
+python3 -m venv .venv
 ```
 
-#### Installing the dependencies
+### Activate Virtual Environment
 
-Once the environment is created and activated, use this command to install the development dependencies.
-
-```shell
-pip install -r requirements-dev.txt
+```sh
+source .venv/bin/activate
 ```
 
-#### Exiting the environment
+### Install Requirements
 
-Interestingly enough, it is the same for every platform.
-
-```shell
-deactivate
+```sh
+pip install -r requirements.txt
 ```
 
-Once the environment is activated, all the commands listed previously should work.
+### Setup Bot Token
 
-> [!IMPORTANT]
-> We highly recommend that you run `pre-commit install` as soon as possible.
+```sh
+export DEFCON_BOT_TOKEN=<token>
+```
 
-## How do I adapt this template to my project?
+for a persistent way,
 
-If you wish to use Pipenv or Poetry, you will have to move the dependencies in [`requirements-dev.txt`](requirements-dev.txt) to the development dependencies of your tool.
+```sh
+touch .env
+```
 
-We've included a porting of [`requirements-dev.txt`](requirements-dev.txt) to both [Poetry](samples/pyproject.toml) and [Pipenv](samples/Pipfile) in the [`samples` folder](samples).
-If you use the Poetry setup, make sure to change the project name, description, and authors at the top of the file.
-Also note that the Poetry [`pyproject.toml`](samples/pyproject.toml) file does not include the Ruff configuration, so if you simply replace the file then the Ruff configuration will be lost.
+```sh
+echo "DEFCON_BOT_TOKEN=<token>" >> .env
+```
 
-When installing new dependencies, don't forget to [pin](https://pip.pypa.io/en/stable/topics/repeatable-installs/#pinning-the-package-versions) them by adding a version tag at the end.
-For example, if I wish to install [Click](https://click.palletsprojects.com/en/8.1.x/), a quick look at [PyPI](https://pypi.org/project/click/) tells me that `8.1.7` is the latest version.
-I will then add `click~=8.1`, without the last number, to my requirements file or dependency manager.
+### Run The Application
 
-> [!IMPORTANT]
-> A code jam project is left unmaintained after the end of the event. If the dependencies aren't pinned, the project will break after any major change in an API.
+```sh
+python main.py
+```
 
-## Final words
+## Demo
 
-> [!IMPORTANT]
-> Don't forget to replace this README with an actual description of your project! Images are also welcome!
+After the starting of the bot, following would need to be done to start the game. 
 
-We hope this template will be helpful. Good luck in the jam!
+1) To initiate the game the player (further referred as 'creator' of the game) need to use `/defcord create` and add the max number of players in the game.
+   
+    <img src="https://github.com/user-attachments/assets/82d6042f-d112-4099-bec1-97625d47e16a" alt="Game" width="400" height="auto">
+
+2) The creator will receive a modal, which will ask for their nation name. 
+
+    <img src="https://github.com/user-attachments/assets/7e306a06-5d21-4a1f-972d-d47db06924e3" alt="Game" width="300" height="auto">
+
+3) After entering the nation name the creator will receive 3 messages.
+
+    1st message referring to them as a player and their nation name.
+
+    2nd message is a game code, for anyone joining the game (visible to everyone in chat)
+  
+    3rd message is the standard joining message, indicating how many players are left to join and who has last joined (here the game created if of 2 players)
+
+    </br>
+
+    <img src="https://github.com/user-attachments/assets/c1e1b135-9d97-44a8-b31b-6e078c04dfeb" alt="Game" width="300" height="auto">
+
+4) Other wannabe players would need to use `/defcord join` with the invite code to join the game
+
+    <img src="https://github.com/user-attachments/assets/045061b9-46f6-45fe-a42c-ca3770548236" alt="Game" width="300" height="auto">
+
+5) After everyone joining the game, everyone in the game will receive this message
+
+    <img src="https://github.com/user-attachments/assets/6d3756e8-6f8e-4c3c-83cc-9d4a8ef1f19d" alt="Game" width="300" height="auto">
+
+   (Here `Thonk` being the last player joined)
+
+6) After this the creator is able to use the command `/defcord start` to start the game, and then everyone will receive 3 messages (3rd one being part of the main game, hence covered below) 
+
+    <img src="https://github.com/user-attachments/assets/3da4659d-5671-480b-87ea-da0202571112" alt="Game" width="300" height="auto">
+
+   
+[Move To Top](#defcord)
