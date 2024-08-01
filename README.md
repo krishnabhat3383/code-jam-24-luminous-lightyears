@@ -150,6 +150,12 @@ if you prefer ssh way,
 git clone git@github.com:krishnabhat3383/code-jam-24-luminous-lightyears.git
 ```
 
+### Move To Directory
+
+```sh
+cd code-jam-24-luminous-lightyears
+```
+
 ### Create Virtual Environment
 
 ```sh
