@@ -184,7 +184,9 @@ for a persistent way,
 
 ```sh
 touch .env
+```
 
+```sh
 echo "DEFCON_BOT_TOKEN=<token>" >> .env
 ```
 
