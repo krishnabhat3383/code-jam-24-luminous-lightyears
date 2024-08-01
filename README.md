@@ -10,7 +10,25 @@
       <a href="#vital-attributes">Vital Attributes</a>
     </li>
     <li>
+      <a href="#game-model">Game Model</a>
+    </li>
+    <li>
+      <a href="#commands-available">Commands Available</a>
+    </li>
+    <li>
+      <a href="#theme-relativity">How the bot relate to the theme `Information Overload`</a>
+    </li>
+    <li>
+      <a href="#known-issues">Known Issues</a>
+    </li>
+    <li>
+      <a href="#enchancements">Enchancements</a>
+    </li>
+    <li>
       <a href="#contributions">Contributions</a>
+    </li>
+    <li>
+      <a href="#installation">Installation of the bot</a>
     </li>
     <li>
       <a href="#Demo">Demo of the game</a>
@@ -49,7 +67,7 @@ We have `3` stages, each stage will make the information flow faster.
 
 If the player is AFK or non-responsive to the information for `60` seconds, they're disqualified automatically.
 
-## Gameplay
+## Commands available
 
 
 ### `/defcord create`
