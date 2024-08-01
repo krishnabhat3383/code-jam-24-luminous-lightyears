@@ -52,10 +52,12 @@ The main goal is to make sure you won't run out of your vital attributes in orde
 
 ## Vital Attributes
 
-- Money         (default: 100)
-- Loyalty       (default: 50)
-- Security      (default: 50)
-- World Opinion (default: 50)
+| Attribute     | Default Value |
+|---------------|---------------|
+| Money         | 100           |
+| Loyalty       | 50            |
+| Security      | 50            |
+| World Opinion | 50            |
 
 ## Game Model
 
