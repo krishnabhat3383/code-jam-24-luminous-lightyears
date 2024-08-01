@@ -39,6 +39,9 @@
     <li>
       <a href="#demo">Demo of the game</a>
     </li>
+    <li>
+      <a href="#video-showcase">A video of the gameplay</a>
+    </li>
   </ol>
 </details>
 
@@ -250,5 +253,10 @@ After the starting of the bot, following would need to be done to start the game
 7) Game flow - example
 
     ![flow](https://github.com/user-attachments/assets/df7e944a-a361-47c5-862a-34a4b44f0bf0)
+
+
+## Video Showcase
+https://youtube.com/shorts/Aox39yoCAXY
+
 
 [Move To Top](#defcord)
