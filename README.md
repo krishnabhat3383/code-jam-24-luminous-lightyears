@@ -247,5 +247,8 @@ After the starting of the bot, following would need to be done to start the game
 
     <img src="https://github.com/user-attachments/assets/3da4659d-5671-480b-87ea-da0202571112" alt="Game" width="300" height="auto">
 
-   
+7) Game flow - example
+
+    ![flow](https://github.com/user-attachments/assets/df7e944a-a361-47c5-862a-34a4b44f0bf0)
+
 [Move To Top](#defcord)
