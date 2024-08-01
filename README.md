@@ -22,7 +22,7 @@
       <a href="#known-issues">Known Issues</a>
     </li>
     <li>
-      <a href="#enchancements">Enchancements</a>
+      <a href="#enhancements">Enhancements</a>
     </li>
     <li>
       <a href="#contributions">Contributions</a>
@@ -31,7 +31,7 @@
       <a href="#installation">Installation of the bot</a>
     </li>
     <li>
-      <a href="#Demo">Demo of the game</a>
+      <a href="#demo">Demo of the game</a>
     </li>
   </ol>
 </details>
