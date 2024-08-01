@@ -34,7 +34,7 @@
       <a href="#contributions">Contributions</a>
     </li>
     <li>
-      <a href="#installation">Running the bot</a>
+      <a href="#running-the-app">Running the App</a>
     </li>
     <li>
       <a href="#demo">Demo of the game</a>
@@ -122,7 +122,11 @@ After every stage we show the player's attributes so they need to make a quick p
 
 ## Known Issues
 
-- `/defcord start` will show as `Application did not respond` in the invalid use case scenarios instead of showing a relevant message to the user. This is due to a fact that we missed to `await` that message call during a code refactor.
+- `/defcord start` will show as `Application did not respond` in the invalid use case scenarios instead of showing a relevant message to the user. This is due to a fact that we missed to `await` that message call during a code refactor. Invalid use case scenarios,
+  * Trying to start the game without being in one
+  * When in a game, trying to start it (only creator can)
+  * Trying to start a game is already running
+  * Trying to start the game before all the players join
 - We have an image embedded in each message to represent the actor of the message. But sometimes the service that we used to host the images goes down. So sometimes the images won't appear. If you receive any error due to this in the console or bot crashes due to this, you can set this env variable `WITHOUT_ACTOR_THUMBNAIL` to `True` to disable thumbnail functionality.
 
 ## Enhancements
@@ -140,10 +144,10 @@ After every stage we show the player's attributes so they need to make a quick p
 - **Clueless_conoisseur** (krishnabhat): Checking PRs, structuring the project
 - **Automafun** (Dhanvantg): Basic game character formation, logo creation
 - **Diverman** (hazyfossa): Coding game factory, player classes, implementing character templates, weighted randomness logic
-- **Maheshkumar**: Coding button interactions, `defcord start` command, advanced UI components
+- **Maheshkumar**: Coding button interactions, defcord start command, advanced UI components
 - **Sapient**: Basic UI elements, PlayerState class default values, Game class creation, game flow, Anti-AFK mechanism, character images
 
-## Installation
+## Running The App
 
 We require you to have `python 3.12`.
 
