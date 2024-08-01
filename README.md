@@ -106,7 +106,12 @@ After every stage we show the player's attributes so they need to make a quick p
 - Option to start the game if everyone has not joined.
 
 ## Contributions
-- ...
+- Clueless_conoisseur(krishnabhat is Github name) - Checking of some of the PRs and structuring of the project
+- Automafun(Dhavantg is Github name) - Basic game character formation, logo making
+- Diverman(hazyfossa is Github name) -  Coding of game factory, player classes, Implementation of character templates to the game, Weighted randomness for appreance of characters logic 
+- Maheshkumar - Coding of button interactions,  defcord start command, Coding of Advanced UI components
+- Sapient - Adding of basic UI elements, coding PlayerState  class' default (instance) values, creating Game class, creating game flow from stages, Adding of Anti AFK, Images for the characters in the game 
+
 
 ## Installation
 
