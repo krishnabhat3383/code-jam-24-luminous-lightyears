@@ -210,42 +210,42 @@ python main.py
 ```
 
 ## Demo
+
 After the starting of the bot, following would need to be done to start the game. 
 
 1) To initiate the game the player (further referred as 'creator' of the game) need to use `/defcord create` and add the max number of players in the game.
    
-   ![Screenshot 2024-08-01 183456](https://github.com/user-attachments/assets/82d6042f-d112-4099-bec1-97625d47e16a)
-
+    <img src="https://github.com/user-attachments/assets/82d6042f-d112-4099-bec1-97625d47e16a" alt="Game" width="400" height="auto">
 
 2) The creator will receive a modal, which will ask for their nation name. 
 
-   ![image](https://github.com/user-attachments/assets/7e306a06-5d21-4a1f-972d-d47db06924e3)
-
+    <img src="https://github.com/user-attachments/assets/7e306a06-5d21-4a1f-972d-d47db06924e3" alt="Game" width="300" height="auto">
 
 3) After entering the nation name the creator will receive 3 messages.
 
-   ![image](https://github.com/user-attachments/assets/c1e1b135-9d97-44a8-b31b-6e078c04dfeb)
+    1st message referring to them as a player and their nation name.
 
-   - 1st message referring to them as a player and their nation name.
-   - 2nd message is a game code, for anyone joining the game (visible to everyone in chat)
-   - 3rd message is the standard joining message, indicating how many players are left to join and who has last joined (here the game created if of 2 players)
+    2nd message is a game code, for anyone joining the game (visible to everyone in chat)
+  
+    3rd message is the standard joining message, indicating how many players are left to join and who has last joined (here the game created if of 2 players)
 
+    </br>
+
+    <img src="https://github.com/user-attachments/assets/c1e1b135-9d97-44a8-b31b-6e078c04dfeb" alt="Game" width="300" height="auto">
 
 4) Other wannabe players would need to use `/defcord join` with the invite code to join the game
 
-   ![image](https://github.com/user-attachments/assets/045061b9-46f6-45fe-a42c-ca3770548236)
-
+    <img src="https://github.com/user-attachments/assets/045061b9-46f6-45fe-a42c-ca3770548236" alt="Game" width="300" height="auto">
 
 5) After everyone joining the game, everyone in the game will receive this message
 
-   ![image](https://github.com/user-attachments/assets/6d3756e8-6f8e-4c3c-83cc-9d4a8ef1f19d)
+    <img src="https://github.com/user-attachments/assets/6d3756e8-6f8e-4c3c-83cc-9d4a8ef1f19d" alt="Game" width="300" height="auto">
 
-    (Here `Thonk` being the last player joined)
+   (Here `Thonk` being the last player joined)
 
 6) After this the creator is able to use the command `/defcord start` to start the game, and then everyone will receive 3 messages (3rd one being part of the main game, hence covered below) 
 
-   ![Screenshot 2024-08-01 194118](https://github.com/user-attachments/assets/3da4659d-5671-480b-87ea-da0202571112)
-   
+    <img src="https://github.com/user-attachments/assets/3da4659d-5671-480b-87ea-da0202571112" alt="Game" width="300" height="auto">
 
    
 [Move To Top](#defcord)
