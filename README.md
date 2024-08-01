@@ -1,8 +1,8 @@
-<p align="center">
+<p align="center" id="defcord">
   <img src="https://github.com/user-attachments/assets/97a9a8f3-9749-4a47-91d8-7bafe9071199" alt="Game Logo" width="200" height="200">
 </p>
 
-<h1 align="center" id="defcord">Defcord</h1>
+<h1 align="center">Defcord</h1>
 
 <p align="center"><i>Lead Nations. Compete. Outsmart.</i></p>
 
