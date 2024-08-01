@@ -9,6 +9,9 @@
     <li>
       <a href="#vital-attributes">Vital Attributes</a>
     </li>
+    <li>
+      <a href="#Demo">Demo of the game</a>
+    </li>
   </ol>
 </details>
 
@@ -45,6 +48,7 @@ If the player is AFK or non-responsive to the information for `60` seconds, they
 
 ## Gameplay
 
+
 ### `/defcord create`
 
 We use this command to create a defcord game. Whoever creates will be part of the game by default and they'll be the only one who can start the game.
@@ -55,11 +59,13 @@ Once the game is created, a message will be posted with the invite code. Other p
 
 A player can join from a different channel or even a different server. Only requirement is in that server `defcord` should be installed.
 
+
 ### `/defcord join`
 
 Other payers need to use this command with the given/taken invite code from the game creator in order to join a `defcord` game.
 
-They also need to enter their nation name.
+They also need to enter their nation name, via a modal prompt.
+
 
 ### `/defcord start`
 
@@ -69,11 +75,13 @@ After that, stage `1` begins. Players will receive information at a slow rate fi
 
 Now the players should start respond to the information by making a good decision in order to survive.
 
+
 ### `/defcord leave`
 
 If the player wants to leave in the middle of the game or before the game start, they can do. But if they leave in the middle of the game, they cannot rejoin. They can join another game.
 
 If you are the last member to quit, you are the survivor of the game as you have no one to compete. But you can play till the game time and see what the game brings you. If you run out of an attribute than you are done.
+
 
 ## Theme Relativity
 
@@ -90,11 +98,12 @@ After every stage we show the player's attributes so they need to make a quick p
 ## Enhancements
 
 - Include attribute sabotage and request mechanism so that it'll be more PvP instead of PvE.
-- Game time can be configurable by the creator
-- Include encryption like mechanism to make it harder for the user
-- Option to stop the game by the creator (current work around is to make all players leave / die)
-- Enhance random information picking logic to make it more relevant to the players context and reduce repetitiveness of information
-- Option to pause the game
+- Game time can be configurable by the creator.
+- Include encryption like mechanism to make it harder for the user.
+- Option to stop the game by the creator (current work around is to make all players leave / die).
+- Enhance random information picking logic to make it more relevant to the players context and reduce repetitiveness of information.
+- Option to pause the game.
+- Option to start the game if everyone has not joined.
 
 ## Contributions
 - ...
@@ -154,9 +163,42 @@ python main.py
 ```
 
 ## Demo
+After the starting of the bot, following would need to be done to start the game. 
 
-### flow-1
-<!-- ![Example](./assets/example.gif) -->
+1) To initiate the game the player (further referred as 'creator' of the game) need to use `/defcord create` and add the max number of players in the game.
+   
+   ![Screenshot 2024-08-01 183456](https://github.com/user-attachments/assets/82d6042f-d112-4099-bec1-97625d47e16a)
 
 
+2) The creator will receive a modal, which will ask for their nation name. 
+
+   ![image](https://github.com/user-attachments/assets/7e306a06-5d21-4a1f-972d-d47db06924e3)
+
+
+3) After entering the nation name the creator will receive 3 messages.
+
+   ![image](https://github.com/user-attachments/assets/c1e1b135-9d97-44a8-b31b-6e078c04dfeb)
+
+   - 1st message referring to them as a player and their nation name.
+   - 2nd message is a game code, for anyone joining the game (visible to everyone in chat)
+   - 3rd message is the standard joining message, indicating how many players are left to join and who has last joined (here the game created if of 2 players)
+
+
+4) Other wannabe players would need to use `/defcord join` with the invite code to join the game
+
+   ![image](https://github.com/user-attachments/assets/045061b9-46f6-45fe-a42c-ca3770548236)
+
+
+5) After everyone joining the game, everyone in the game will receive this message
+
+   ![image](https://github.com/user-attachments/assets/6d3756e8-6f8e-4c3c-83cc-9d4a8ef1f19d)
+
+    (Here `Thonk` being the last player joined)
+
+6) After this the creator is able to use the command `/defcord start` to start the game, and then everyone will receive 3 messages (3rd one being part of the main game, hence covered below) 
+
+   ![Screenshot 2024-08-01 194118](https://github.com/user-attachments/assets/3da4659d-5671-480b-87ea-da0202571112)
+   
+
+   
 [Move To Top](#defcord)
