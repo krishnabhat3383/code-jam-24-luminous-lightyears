@@ -19,7 +19,7 @@
       <a href="#game-model">Game Model</a>
     </li>
     <li>
-      <a href="#commands-available">Commands Available</a>
+      <a href="#available-commands">Available Commands</a>
     </li>
     <li>
       <a href="#theme-relativity">How the bot relate to the theme `Information Overload`</a>
@@ -40,7 +40,7 @@
       <a href="#demo">Demo of the game</a>
     </li>
     <li>
-      <a href="#video-showcase">A video of the gameplay</a>
+      <a href="#video-showcase">A Video of the Gameplay</a>
     </li>
   </ol>
 </details>
@@ -78,7 +78,7 @@ We have `3` stages, each stage will make the information flow faster.
 
 If the player is AFK or non-responsive to the information for `60` seconds, they're disqualified automatically.
 
-## Commands available
+## Available Commands
 
 
 ### `/defcord create`
