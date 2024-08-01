@@ -211,13 +211,13 @@ python main.py
 
 ## Demo
 
-After the starting of the bot, following would need to be done to start the game. 
+After the starting of the bot, following would need to be done to start the game.
 
 1) To initiate the game the player (further referred as 'creator' of the game) need to use `/defcord create` and add the max number of players in the game.
-   
+
     <img src="https://github.com/user-attachments/assets/82d6042f-d112-4099-bec1-97625d47e16a" alt="Game" width="400" height="auto">
 
-2) The creator will receive a modal, which will ask for their nation name. 
+2) The creator will receive a modal, which will ask for their nation name.
 
     <img src="https://github.com/user-attachments/assets/7e306a06-5d21-4a1f-972d-d47db06924e3" alt="Game" width="300" height="auto">
 
@@ -226,7 +226,7 @@ After the starting of the bot, following would need to be done to start the game
     1st message referring to them as a player and their nation name.
 
     2nd message is a game code, for anyone joining the game (visible to everyone in chat)
-  
+
     3rd message is the standard joining message, indicating how many players are left to join and who has last joined (here the game created if of 2 players)
 
     </br>
@@ -243,7 +243,7 @@ After the starting of the bot, following would need to be done to start the game
 
    (Here `Thonk` being the last player joined)
 
-6) After this the creator is able to use the command `/defcord start` to start the game, and then everyone will receive 3 messages (3rd one being part of the main game, hence covered below) 
+6) After this the creator is able to use the command `/defcord start` to start the game, and then everyone will receive 3 messages (3rd one being part of the main game, hence covered below)
 
     <img src="https://github.com/user-attachments/assets/3da4659d-5671-480b-87ea-da0202571112" alt="Game" width="300" height="auto">
 
